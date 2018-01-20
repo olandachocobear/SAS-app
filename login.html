@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html ng-app="absenJobApp">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+<title>My App</title>
+
+<link rel="stylesheet" href="css/framework7.material.min.css">
+<link rel="stylesheet" href="css/framework7.material.colors.min.css">
+
+<link rel="stylesheet" href="css/my-app.css">
+<link rel="stylesheet" href="css/framework7-icons.css">
+
+</head>
+
+<body ng-controller="LoginCtrl" id=mainView>
+
+
+<!-- <div class="toolbar tabbar tabbar-scrollable">
+<div class="toolbar-inner"><a href="#tab-1" class="tab-link active">Tab 1</a><a href="#tab-2" class="tab-link">Tab 2</a><a href="#tab-3" class="tab-link">Tab 3</a><a href="#tab-4" class="tab-link">Tab 4</a><a href="#tab-5" class="tab-link">Tab 5</a><a href="#tab-6" class="tab-link">Tab 6</a><a href="#tab-7" class="tab-link">Tab 7</a><a href="#tab-8" class="tab-link">Tab 8</a><a href="#tab-9" class="tab-link">Tab 9</a><a href="#tab-10" class="tab-link">Tab 10</a><a href="#tab-11" class="tab-link">Tab 11</a><a href="#tab-12" class="tab-link">Tab 12</a></div>
+</div>
+ -->
+
+
+
+
+<div class="statusbar-overlay"></div>
+
+<div class="panel-overlay"></div>
+
+<div class="panel panel-left panel-reveal">
+<div class="content-block">
+<p>Left panel content goes here</p>
+</div>
+</div>
+
+
+<!-- <div class="panel panel-right panel-cover">
+<div class="content-block">
+<p>Right panel content goes here</p>
+</div>
+</div>
+ -->
+
+  <!-- Right Panel with Cover effect -->
+  <div class="panel panel-right panel-cover" ng-controller="ProfileController">
+    <div class="content-block">
+      <h2>
+         User profile
+      </h2>
+      <p>{{menu1}}</p>
+      <p>{{menu2}}</p>
+      <!-- Click on link with "close-panel" class will close panel -->
+      <p><a href="#" class="close-panel">Log Out</a></p>
+      <!-- Click on link with "open-panel" and data-panel="left" attribute will open Left panel -->
+
+    </div>
+  </div>
+
+
+
+<div class="views tabs toolbar-through">
+
+<div id="view-1" class="view view-main tab ">
+
+<div class="pages">
+
+<div data-page="index-1" class="page" ng-controller="AbsenController">
+
+<div class="page-content">
+<div class="content-block-title">Welcome</div>
+<div class="content-block" style=position:absolute;width:100%;top:29%>
+
+<center>
+      <p class="buttons" style=font-size:30px;width:80%;>
+
+        <a href="#" ng-click="scan()" style=font-size:19px class="set-map button button-big button-raised button-fill color-blue ripple-blue">
+          SCAN QR
+          <i class="f7-icons size-22">navigation</i>
+        </a>
+
+		<div ng-show="result.text!=''" style=margin-top:-4px;line-height:14px;margin-bottom:57px;color:gray>
+		<h2>Result:</h2>
+			<p ng-bind="result.text"></p>
+			<h1 style="font-size:30px;width:72%;margin-top:33px;opacity:0.9;color:#c24e4e; padding: 15px; border: 4px ridge khaki; text-shadow:1px 1px 4px #bbb" ng-bind="result.time"></h1>
+		</div>
+
+
+     <p class="buttons" style=font-size:30px;width:80%;>
+        <a href="#" ng-click=boom() id=absenBtn ng-disabled="result.validCode==0" style=font-size:19px class="absen-btn button button-big button-raised button-fill color-red ripple-blue" >
+          {{absen_txt}}
+         <i class="f7-icons size-22">alarm</i>
+        </a>
+
+      </p>
+</center>
+
+</div>
+</div>
+</div>
+</div>
+</div>
+
+<div id="view-2" class="view tab active">
+
+<!--
+<div class="navbar">
+  <div class="navbar-inner">
+  <div class="left"><a href="#" class="back link"> <i class="icon icon-back"></i><span>Back</span></a></div>
+<div class="center sliding">About Us</div>
+</div>
+</div>
+ -->
+
+
+
+<!--:: PAGE-2: List Job -->
+  
+<div class="pages navbar-fixed"  >
+<div data-page="index-2" class="page" ng-controller="JobListController">
+<div class="page-content pull-to-refresh-content" data-ptr-distance="55" >
+      <!-- Default pull to refresh layer-->
+    <div class="pull-to-refresh-layer" >
+      <div class="preloader" style=margin-top:15px;margin-bottom:-10px;></div>
+      <div class="pull-to-refresh-arrow"></div>
+    </div>
+
+
+<div class="content-block" style="margin-top:38px;padding:0px 4%">
+
+    <h2 style="text-shadow:1px 1px 2px #ddd;">
+    List Job Hari Ini
+  </h2>
+<!--   <h5 style="font-size:12px;text-shadow:1px 1px 2px #ddd;color:maroon;margin-top:-10px;margin-left:5px;letter-spacing:.8pt;margin-bottom:14px"> -->
+<h5 style="font-size:16.5px;color:maroon;margin-left:-1px;margin-top:-5px; opacity:0.9;position:absolute">
+    Senin, 12 April 2017
+  </h5>
+
+<style>
+.started_job {
+background-color:lightgoldenrodyellow
+}
+</style>
+
+  <div class="list-block accordion-list" style=margin-top:57px;>
+    <ul>
+    <li ng-repeat="job in joblist" class="accordion-item " ng-class="{true: 'started_job'} [job.start_at != null]" ><a href="#" class="item-link item-content" >
+	
+	<span class="badge bg-red" ng-show="job.start_at!=null" style=position:absolute;float:right;right:15%;opacity:0.9 >Task started</span>
+
+    <div class="item-inner" >
+    <div class="item-title" ng-bind="job.nama_job"></div>
+    </div></a>
+    <div class="accordion-item-content" style="">
+    <div class="content-block">
+
+      <p ng-bind="job.deskripsi_job"></p>
+      <p class="buttons" style=font-size:30px;width:60%;>
+
+        <a href="#" ng-click="startJob($index)" ng-disabled="job.start_at != null" style=font-size:14px;margin-top:10px class=" button button-raised button-fill color-gray ripple-gray" >
+          MULAI TUGAS
+        </a>
+		</p>
+
+		<hr style=opacity:0.4>
+    </div>
+    </div>
+
+    </li>
+ 
+  </div>
+
+</div>
+</div>
+</div>
+</div>
+</div>
+
+
+
+<div id="view-3" class="view tab">
+<!--:: PAGE-3: Checklist Job -->
+
+<div class="pages navbar-fixed" >
+<div data-page="index-3" class="page" ng-controller="JobReportListController">
+<div class="page-content">
+
+<div class="content-block" style="margin-top:38px;padding:0px 4%;opacity:1;">
+  <h2  style="text-shadow:1px 1px 2px #ddd;">
+    Job Check-list
+  </h2>
+<!--   <h5 style="font-size:12px;text-shadow:1px 1px 2px #ddd;color:maroon;margin-top:-10px;margin-left:5px;letter-spacing:.8pt;margin-bottom:14px"> -->
+<h5 style="font-size: 15px;
+    color: maroon;
+    margin-left: 1px;
+    margin-top: -6px;
+    letter-spacing: .2pt;
+    margin-bottom: 6px;">
+    <span id=task_done>{{done}}</span> dari <span id=total_task>{{total}}</span> tugas selesai.
+  </h5>
+  <hr style=color:blue>
+
+<div class="list-block media-list" style=margin-top:-6px> <!-- -33px -->
+
+<ul>
+<a ng-href="{{ (job.start_at=='' || job.start_at==null) ? '#' : 'report.html'}}" ng-click=reportJob($index) class="item-link change-page pindah-page" id=boom ng-repeat="job in jobreportlist">
+<li>
+
+<label class="label-checkbox item-content">
+<input type="checkbox" name="cb-1" ng-checked="job.report_date" disabled>
+  <div class="item-media" style=position:absolute;>
+	<i class="icon icon-form-checkbox "></i>
+  </div>
+<div class="item-inner" style=padding-left:33px;>
+  <div class="item-title-row">
+<div class="item-title" ng-bind="job.nama_job">
+ 
+</div>
+
+<div ng-show="job.report_date" class="item-after">17:14</div>
+</div>
+  <div ng-show="job.report" class="item-text" ng-bind="job.report" style=font-style:oblique></div>
+
+</div>
+
+</li>
+</a>
+
+
+<!--<a href="services.html" class="item-link change-page">
+<li>
+
+<label class="label-checkbox item-content">
+<input type="checkbox" name="cb-1" disabled>
+	<div class="item-media" style=position:absolute;>
+		<i class="icon icon-form-checkbox "></i>
+	</div>
+<div class="item-inner" style=padding-left:33px>
+  <div class="item-title-row">
+	<div class="item-title">
+        Foto Copy Surat Kerjasama</div>
+    </div>
+  </div>
+
+</li>
+</a>-->
+
+
+</ul>
+</div>
+
+
+</div>
+</div>
+</div>
+</div>
+</div>
+<div id="view-4" class="view tab">
+<div class="pages navbar-fixed">
+<div data-page="index-4" class="page">
+<div class="navbar">
+<div class="navbar-inner">
+<div class="center">Settings</div>
+</div>
+</div>
+<div class="page-content">
+<div class="list-block">
+<ul>
+<li>
+<div class="item-content">
+<div class="item-media"><i class="icon icon-form-name"></i></div>
+<div class="item-inner">
+<div class="item-title label">Name</div>
+<div class="item-input">
+<input type="text" placeholder="Your name">
+</div>
+</div>
+</div>
+</li>
+<li>
+<div class="item-content">
+<div class="item-media"><i class="icon icon-form-email"></i></div>
+<div class="item-inner">
+<div class="item-title label">E-mail</div>
+<div class="item-input">
+<input type="email" placeholder="E-mail">
+</div>
+</div>
+</div>
+</li>
+<li>
+<div class="item-content">
+<div class="item-media"><i class="icon icon-form-url"></i></div>
+<div class="item-inner">
+<div class="item-title label">URL</div>
+<div class="item-input">
+<input type="url" placeholder="URL">
+</div>
+</div>
+</div>
+</li>
+<li>
+<div class="item-content">
+<div class="item-media"><i class="icon icon-form-password"></i></div>
+<div class="item-inner">
+<div class="item-title label">Password</div>
+<div class="item-input">
+<input type="password" placeholder="Password">
+</div>
+</div>
+</div>
+</li>
+<li>
+<div class="item-content">
+<div class="item-media"><i class="icon icon-form-tel"></i></div>
+<div class="item-inner">
+<div class="item-title label">Phone</div>
+<div class="item-input">
+<input type="tel" placeholder="Phone">
+</div>
+</div>
+</div>
+</li>
+<li>
+<div class="item-content">
+<div class="item-media"><i class="icon icon-form-gender"></i></div>
+<div class="item-inner">
+<div class="item-title label">Gender</div>
+<div class="item-input">
+<select>
+<option>Male</option>
+<option>Female</option>
+</select>
+</div>
+</div>
+</div>
+</li>
+<li>
+<div class="item-content">
+<div class="item-media"><i class="icon icon-form-calendar"></i></div>
+<div class="item-inner">
+<div class="item-title label">Birth date</div>
+<div class="item-input">
+<input type="date" placeholder="Birth day" value="2014-04-30">
+</div>
+</div>
+</div>
+</li>
+<li>
+<div class="item-content">
+<div class="item-media"><i class="icon icon-form-toggle"></i></div>
+<div class="item-inner">
+<div class="item-title label">Switch</div>
+<div class="item-input">
+<label class="label-switch">
+<input type="checkbox">
+<div class="checkbox"></div>
+</label>
+</div>
+</div>
+</div>
+</li>
+<li>
+<div class="item-content">
+<div class="item-media"><i class="icon icon-form-settings"></i></div>
+<div class="item-inner">
+<div class="item-title label">Slider</div>
+<div class="item-input">
+<div class="range-slider">
+<input type="range" min="0" max="100" value="50" step="0.1">
+</div>
+</div>
+</div>
+</div>
+</li>
+</ul>
+</div>
+<div class="content-block">
+<p>Mauris commodo lacus at nisl lacinia, nec facilisis erat rhoncus. Sed eget pharetra nunc. Aenean vitae vehicula massa, sed sagittis ante. Quisque luctus nec velit dictum convallis. Nulla facilisi. Ut sed erat nisi. Donec non dolor massa. Mauris malesuada dolor velit, in suscipit leo consectetur vitae. Duis tempus ligula non eros pretium condimentum. Cras sed dolor odio.</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+
+<div id=toolbar class="toolbar tabbar tabbar-labels" style=margin-top:0px ng-controller="TabController">
+  <div class="toolbar-inner">
+    <a href="#view-1" class="tab-link "> <i class="f7-icons size-22">login</i><span class="tabbar-label">ABSEN</span></a>
+    <a href="#view-2" class="tab-link active"><i class="f7-icons size-29">menu<span class="badge bg-red" style=margin-left:-28px;opacity:0.9 ng-bind="job_count"></span></i><span class="tabbar-label">LIST JOB</span></a>
+    <a href="#view-3" class="tab-link"> <i class="f7-icons size-22">compose</i> <span class="tabbar-label">REPORT</span></a>
+    <a href="#" data-panel="right" class="tab-link open-panel"> <i class="f7-icons size-27">more round</i><span class="tabbar-label">MENU</span></a></div>
+  </div>
+</div>
+
+
+  <script type="text/javascript" src="js/jquery.min.js"></script>
+        <script type="text/javascript" src="vendors/onsen/js/angular/angular.js"></script> 
+
+  <script type="text/javascript" src="js/framework7.min.js"></script>
+  <script type="text/javascript" src="js/framework7.angular.hook.js"></script>
+
+  <script src="cordova.js"></script>
+
+        
+        <script type="text/javascript" src="js/lodash.underscore.min.js"></script>
+        <script type="text/javascript" src="js/event.js"></script>
+        <script type="text/javascript" src="js/ui-map.js"></script>
+	  	  <script type="text/javascript" src="js/app.js"></script>
+        <script type="text/javascript" src="js/data.js"></script>
+        <script type="text/javascript" src="js/app-local-storage.js"></script>
+        <script type="text/javascript" src="js/angular-local-storage.js"></script>
+        <script type="text/javascript" src="js/angular-sanitize.js"></script>
+        <script type="text/javascript" src="js/nvd3/angular-nvd3.min.js"></script>
+
+<script type="text/javascript" src="js/my-app.js"></script>
+
+<script>
+  app.initialize();
+</script>
+
+</body>
+</html>

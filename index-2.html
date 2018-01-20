@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+<title>My App</title>
+
+<link rel="stylesheet" href="css/framework7.material.min.css">
+<link rel="stylesheet" href="css/framework7.material.colors.min.css">
+
+<link rel="stylesheet" href="css/my-app.css">
+</head>
+<body>
+
+<!-- <div class="toolbar tabbar tabbar-scrollable">
+<div class="toolbar-inner"><a href="#tab-1" class="tab-link active">Tab 1</a><a href="#tab-2" class="tab-link">Tab 2</a><a href="#tab-3" class="tab-link">Tab 3</a><a href="#tab-4" class="tab-link">Tab 4</a><a href="#tab-5" class="tab-link">Tab 5</a><a href="#tab-6" class="tab-link">Tab 6</a><a href="#tab-7" class="tab-link">Tab 7</a><a href="#tab-8" class="tab-link">Tab 8</a><a href="#tab-9" class="tab-link">Tab 9</a><a href="#tab-10" class="tab-link">Tab 10</a><a href="#tab-11" class="tab-link">Tab 11</a><a href="#tab-12" class="tab-link">Tab 12</a></div>
+</div>
+ -->
+
+<div class="statusbar-overlay"></div>
+
+<div class="panel-overlay"></div>
+
+<div class="panel panel-left panel-reveal">
+<div class="content-block">
+<p>Left panel content goes here</p>
+</div>
+</div>
+
+<div class="panel panel-right panel-cover">
+<div class="content-block">
+<p>Right panel content goes here</p>
+</div>
+</div>
+
+
+<div class="views tabs toolbar-through">
+
+<div id="view-1" class="view view-main tab ">
+
+<div class="pages">
+
+<div data-page="index-1" class="page">
+
+<div class="page-content">
+<div class="content-block-title">Welcome</div>
+<div class="content-block">
+<p>This is an example of tab bar application layout. The main point of such tabbed layout is that each tab contains independent view with its own routing and navigation.</p>
+<p>Each tab/view may have different layout, different navbar type (dynamic, fixed or static) or without navbar like this tab.</p>
+<p>And of course, your favorite panels are still here: <a href="#" class="open-panel">left</a> and <a href="#" data-panel="right" class="open-panel">right</a></p>
+<p>Icons and their labels in tab bar below are just for example and don't related to their content.</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+<div id="view-2" class="view tab ">
+
+<!--
+<div class="navbar">
+  <div class="navbar-inner">
+  <div class="left"><a href="#" class="back link"> <i class="icon icon-back"></i><span>Back</span></a></div>
+<div class="center sliding">About Us</div>
+</div>
+</div>
+ -->
+
+
+<div class="pages navbar-fixed">
+<div data-page="index-2" class="page">
+<div class="page-content pull-to-refresh-content" data-ptr-distance="55">
+      <!-- Default pull to refresh layer-->
+    <div class="pull-to-refresh-layer" >
+      <div class="preloader" style=margin-top:15px;margin-bottom:-10px;></div>
+      <div class="pull-to-refresh-arrow"></div>
+    </div>
+
+
+<div class="content-block">
+
+    <h2>
+    List Job Hari Ini
+  </h2>
+<!--   <h5 style="font-size:12px;text-shadow:1px 1px 2px #ddd;color:maroon;margin-top:-10px;margin-left:5px;letter-spacing:.8pt;margin-bottom:14px"> -->
+<h5 style="font-size:14px;text-shadow:1px 1px 2px #ddd;color:maroon;margin-left:-2px;margin-top:-10px;letter-spacing:.2pt;margin-bottom:8px">
+    Senin, 12 April 2017
+  </h5>
+  <hr>
+
+  <div class="list-block  accordion-list" style=margin-top:14px>
+    <ul>
+    <li class="accordion-item "><a href="#" class="item-link item-content">
+    <div class="item-inner">
+    <div class="item-title">Scan Document</div>
+    </div></a>
+    <div class="accordion-item-content" style="">
+    <div class="content-block">
+      <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean elementum id neque nec commodo. Sed vel justo at turpis laoreet pellentesque quis sed lorem. Integer semper arcu nibh, non mollis arcu tempor vel. Sed pharetra tortor vitae est rhoncus, vel congue dui sollicitudin. Donec eu arcu dignissim felis viverra blandit suscipit eget ipsum.</p>
+    </div>
+    </div>
+
+    </li>
+
+    <li class="accordion-item"><a href="#" class="item-link item-content">
+    <div class="item-inner">
+    <div class="item-title">Integer semper</div>
+    </div></a>
+    <div class="accordion-item-content" style="">
+    <div class="content-block">
+    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean elementum id neque nec commodo. Sed vel justo at turpis laoreet pellentesque quis sed lorem. Integer semper arcu nibh, non mollis arcu tempor vel. Sed pharetra tortor vitae est rhoncus, vel congue dui sollicitudin. Donec eu arcu dignissim felis viverra blandit suscipit eget ipsum.</p>
+    </div>
+    </div>
+    </li>
+    </ul>
+  </div>
+
+</div>
+</div>
+</div>
+</div>
+</div>
+
+<div id="view-3" class="view tab">
+<div class="pages navbar-fixed">
+<div data-page="index-3" class="page">
+<div class="page-content">
+
+<div class="content-block" style=opacity:1>
+  <h2>
+    List Job Hari Ini
+  </h2>
+<!--   <h5 style="font-size:12px;text-shadow:1px 1px 2px #ddd;color:maroon;margin-top:-10px;margin-left:5px;letter-spacing:.8pt;margin-bottom:14px"> -->
+<h5 style="font-size:14px;text-shadow:1px 1px 2px #ddd;color:maroon;margin-left:-2px;margin-top:-10px;letter-spacing:.2pt;margin-bottom:8px">
+    Senin, 12 April 2017
+  </h5>
+  <hr>
+
+<div class="list-block media-list" style=margin-top:14px> <!-- -33px -->
+<ul>
+<!--
+<li>
+
+<label class="label-checkbox item-content">
+<input type="checkbox" name="cb-fb" value="1" checked="checked">
+<div class="item-media"><i class="icon icon-form-checkbox"></i></div>
+<div class="item-inner">
+<div class="item-title-row">
+<div class="item-title">Facebook</div>
+<div class="item-after">17:14</div>
+</div>
+<div class="item-subtitle">New messages from John Doe</div>
+<div class="item-text">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla sagittis tellus ut turpis condimentum, ut dignissim lacus tincidunt. Cras dolor metus, ultrices condimentum sodales sit amet, pharetra sodales eros. Phasellus vel felis tellus. Mauris rutrum ligula nec dapibus feugiat. In vel dui laoreet, commodo augue id, pulvinar lacus.</div>
+</div>
+</label>
+
+</li>
+ -->
+<li>
+
+<label class="label-checkbox item-content">
+<input type="checkbox" name="cb-1" checked="checked" disabled>
+<div class="item-media"><i class="icon icon-form-checkbox "></i></div>
+
+
+<div class="item-inner">
+  <div class="item-title-row">
+<div class="item-title">
+  <a href="about.html" class="item-link change-page">
+  Scan Document
+  </a>
+</div>
+<div class="item-after">17:14</div>
+  </div>
+  <div class="item-text"><i>Done without Complaints.</i></div>
+
+  </div>
+</li>
+<li>
+
+<label class="label-checkbox item-content">
+<input type="checkbox" name="cb-1" disabled>
+<div class="item-media"><i class="icon icon-form-checkbox "></i></div>
+
+<div class="item-inner">
+  <div class="item-title-row">
+    <div class="item-title">
+    <a href="services.html" class="item-link change-page">
+        Foto Copy Surat Kerjasama</div>
+    </a>
+    </div>
+  </div>
+
+</label>
+
+  </li>
+</ul>
+</div>
+
+
+</div>
+</div>
+</div>
+</div>
+</div>
+<div id="view-4" class="view tab active">
+<div class="pages navbar-fixed">
+<div data-page="index-4" class="page">
+<div class="navbar">
+<div class="navbar-inner">
+<div class="center">Settings</div>
+</div>
+</div>
+<div class="page-content">
+<div class="list-block">
+<ul>
+<li>
+<div class="item-content">
+<div class="item-media"><i class="icon icon-form-name"></i></div>
+<div class="item-inner">
+<div class="item-title label">Name</div>
+<div class="item-input">
+<input type="text" placeholder="Your name">
+</div>
+</div>
+</div>
+</li>
+<li>
+<div class="item-content">
+<div class="item-media"><i class="icon icon-form-email"></i></div>
+<div class="item-inner">
+<div class="item-title label">E-mail</div>
+<div class="item-input">
+<input type="email" placeholder="E-mail">
+</div>
+</div>
+</div>
+</li>
+<li>
+<div class="item-content">
+<div class="item-media"><i class="icon icon-form-url"></i></div>
+<div class="item-inner">
+<div class="item-title label">URL</div>
+<div class="item-input">
+<input type="url" placeholder="URL">
+</div>
+</div>
+</div>
+</li>
+<li>
+<div class="item-content">
+<div class="item-media"><i class="icon icon-form-password"></i></div>
+<div class="item-inner">
+<div class="item-title label">Password</div>
+<div class="item-input">
+<input type="password" placeholder="Password">
+</div>
+</div>
+</div>
+</li>
+<li>
+<div class="item-content">
+<div class="item-media"><i class="icon icon-form-tel"></i></div>
+<div class="item-inner">
+<div class="item-title label">Phone</div>
+<div class="item-input">
+<input type="tel" placeholder="Phone">
+</div>
+</div>
+</div>
+</li>
+<li>
+<div class="item-content">
+<div class="item-media"><i class="icon icon-form-gender"></i></div>
+<div class="item-inner">
+<div class="item-title label">Gender</div>
+<div class="item-input">
+<select>
+<option>Male</option>
+<option>Female</option>
+</select>
+</div>
+</div>
+</div>
+</li>
+<li>
+<div class="item-content">
+<div class="item-media"><i class="icon icon-form-calendar"></i></div>
+<div class="item-inner">
+<div class="item-title label">Birth date</div>
+<div class="item-input">
+<input type="date" placeholder="Birth day" value="2014-04-30">
+</div>
+</div>
+</div>
+</li>
+<li>
+<div class="item-content">
+<div class="item-media"><i class="icon icon-form-toggle"></i></div>
+<div class="item-inner">
+<div class="item-title label">Switch</div>
+<div class="item-input">
+<label class="label-switch">
+<input type="checkbox">
+<div class="checkbox"></div>
+</label>
+</div>
+</div>
+</div>
+</li>
+<li>
+<div class="item-content">
+<div class="item-media"><i class="icon icon-form-settings"></i></div>
+<div class="item-inner">
+<div class="item-title label">Slider</div>
+<div class="item-input">
+<div class="range-slider">
+<input type="range" min="0" max="100" value="50" step="0.1">
+</div>
+</div>
+</div>
+</div>
+</li>
+</ul>
+</div>
+<div class="content-block">
+<p>Mauris commodo lacus at nisl lacinia, nec facilisis erat rhoncus. Sed eget pharetra nunc. Aenean vitae vehicula massa, sed sagittis ante. Quisque luctus nec velit dictum convallis. Nulla facilisi. Ut sed erat nisi. Donec non dolor massa. Mauris malesuada dolor velit, in suscipit leo consectetur vitae. Duis tempus ligula non eros pretium condimentum. Cras sed dolor odio.</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+
+<div id=toolbar class="toolbar tabbar tabbar-labels" style=margin-top:0px>
+  <div class="toolbar-inner">
+    <a href="#view-1" class="tab-link "> <i class="icon tabbar-demo-icon-1"></i><span class="tabbar-label">ABSEN</span></a>
+    <a href="#view-2" class="tab-link active"><i class="icon tabbar-demo-icon-2"><span class="badge bg-red">4</span></i><span class="tabbar-label">LIST JOB</span></a>
+    <a href="#view-3" class="tab-link"> <i class="icon tabbar-demo-icon-3"></i><span class="tabbar-label">REPORT</span></a>
+    <a href="#view-4" class="tab-link"> <i class="icon tabbar-demo-icon-4"></i><span class="tabbar-label">MENU</span></a></div>
+  </div>
+</div>
+
+
+
+  <script type="text/javascript" src="js/framework7.min.js"></script>
+  <script type="text/javascript" src="js/jquery.min.js"></script>
+
+<script type="text/javascript" src="js/my-app.js"></script>
+
+
+</body>
+</html>

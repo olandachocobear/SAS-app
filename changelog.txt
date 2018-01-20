@@ -1,0 +1,29 @@
+11 jun:
+fixing api endpoint on cpanel, it will redirect and error if using api/login instead of api/login/ --> (CORS ensued.) even though htaccess has been edited
+
+11 jun:
+
+<IfModule mod_setenvif.c>
+  <IfModule mod_headers.c>
+    # mod_headers, y u no match by Content-Type?!
+    <FilesMatch "\.(php)$">
+      SetEnvIf Origin ":" IS_CORS
+      Header set Access-Control-Allow-Origin "*" env=IS_CORS
+    </FilesMatch>
+    <FilesMatch "\.(php)$">
+    Header set Access-Control-Allow-Origin "*"
+  </FilesMatch>
+  </IfModule>
+</IfModule> 
+
+on htaccess of subdir API
+ 
+9 jun:
+framework7-angular pageload tweak (getting next page's controller & its scope)
+
+8 jun:
+adding angular mode
+
+7 jun:
+make it read json
+

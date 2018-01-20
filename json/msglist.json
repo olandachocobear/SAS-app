@@ -1,0 +1,18 @@
+{
+    "joblist": [    
+        {
+            "job_id": 1,
+            "title":"Scan Document",
+            "job_desc": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean elementum id neque nec commodo. Sed vel justo at turpis laoreet pellentesque quis sed lorem. Integer semper arcu nibh, non mollis arcu tempor vel. Sed pharetra tortor vitae est rhoncus, vel congue dui sollicitudin. Donec eu arcu dignissim felis viverra blandit suscipit eget ipsum.",
+            "assigned_by": "who",
+            "done": 0
+        },
+        { 
+            "job_id": 2,            
+            "title":"Foto Copy Surat Kerjasama",
+            "job_desc": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean elementum id neque nec commodo. Sed vel justo at turpis laoreet pellentesque quis sed lorem. Integer semper arcu nibh, non mollis arcu tempor vel. Sed pharetra tortor vitae est rhoncus, vel congue dui sollicitudin. Donec eu arcu dignissim felis viverra blandit suscipit eget ipsum.",
+            "assigned_by": "who",
+            "done": 0
+        }
+    ]
+}

@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+<title>My App</title>
+
+<link rel="stylesheet" href="css/framework7.material.min.css">
+<link rel="stylesheet" href="css/framework7.material.colors.min.css">
+
+<link rel="stylesheet" href="css/my-app.css">
+</head>
+<body>
+
+<!-- <div class="toolbar tabbar tabbar-scrollable">
+<div class="toolbar-inner"><a href="#tab-1" class="tab-link active">Tab 1</a><a href="#tab-2" class="tab-link">Tab 2</a><a href="#tab-3" class="tab-link">Tab 3</a><a href="#tab-4" class="tab-link">Tab 4</a><a href="#tab-5" class="tab-link">Tab 5</a><a href="#tab-6" class="tab-link">Tab 6</a><a href="#tab-7" class="tab-link">Tab 7</a><a href="#tab-8" class="tab-link">Tab 8</a><a href="#tab-9" class="tab-link">Tab 9</a><a href="#tab-10" class="tab-link">Tab 10</a><a href="#tab-11" class="tab-link">Tab 11</a><a href="#tab-12" class="tab-link">Tab 12</a></div>
+</div>
+ -->
+
+<div class="statusbar-overlay"></div>
+
+<div class="panel-overlay"></div>
+
+<div class="panel panel-left panel-reveal">
+<div class="content-block">
+<p>Left panel content goes here</p>
+</div>
+</div>
+
+<div class="panel panel-right panel-cover">
+<div class="content-block">
+<p>Right panel content goes here</p>
+</div>
+</div>
+
+
+<div class="views tabs toolbar-through">
+
+<div id="view-1" class="view view-main tab ">
+
+<div class="pages">
+
+<div class="page">
+  <!-- Page content should have additional "pull-to-refresh-content" class -->
+  <div class="page-content pull-to-refresh-content" data-ptr-distance="55">
+    <!-- Default pull to refresh layer-->
+    <div class="pull-to-refresh-layer">
+      <div class="preloader"></div>
+      <div class="pull-to-refresh-arrow"></div>
+    </div>
+
+    <!-- usual content below -->
+    <div class="list-block">
+      ...
+    </div>
+  </div>
+</div>
+
+
+
+</div>
+</div>
+  </div>
+
+
+<div id=toolbar class="toolbar tabbar tabbar-labels" style=margin-top:0px>
+  <div class="toolbar-inner">
+    <a href="#view-1" class="tab-link "> <i class="icon tabbar-demo-icon-1"></i><span class="tabbar-label">ABSEN</span></a>
+    <a href="#view-2" class="tab-link active"><i class="icon tabbar-demo-icon-2"><span class="badge bg-red">4</span></i><span class="tabbar-label">LIST JOB</span></a>
+    <a href="#view-3" class="tab-link"> <i class="icon tabbar-demo-icon-3"></i><span class="tabbar-label">REPORT</span></a>
+    <a href="#view-4" class="tab-link"> <i class="icon tabbar-demo-icon-4"></i><span class="tabbar-label">MENU</span></a></div>
+  </div>
+</div>
+
+
+
+  <script type="text/javascript" src="js/framework7.min.js"></script>
+  <script type="text/javascript" src="js/jquery.min.js"></script>
+
+<script type="text/javascript" src="js/my-app.js"></script>
+
+
+</body>
+</html>

@@ -1,0 +1,113 @@
+
+<div class="pages" ng-app="absenJobApp" ng-onload="init()">
+<div data-page="about" class="page" ng-controller='MessageController'>
+
+<div class="navbar fixed" >
+  <div class="navbar-inner">
+  <div class="left">
+    <a href="#" class="back link"> <i class="icon icon-back small"></i>
+
+    </a>
+    <div style=display:inline-block;margin-left:4px;margin-top:16px>
+      <p style=font-size:14px;>
+        Message
+      </p>
+      <h4 style=margin-top:-17px;margin-left:0px>
+        {{judul}}
+      </h4>
+
+    </div>
+  </div>
+<div class="center sliding"></div>
+</div>
+
+</div>
+
+
+<style>
+.unread {
+	background-color: beige;
+}
+.list-block .item-text {
+	max-height: none;
+	margin-top:5px;
+}
+.sender {
+	color: blue;
+	font-style: oblique;
+	text-decoration: underline;
+	font-weight: bold;
+}
+.entry {
+	-webkit-align-self: auto !important;
+	align-self: normal;
+}
+
+.replies {
+	color: green !important;
+}
+.red {
+	color:red;
+	text-decoration:none;
+	font-style: normal;
+}
+.reply-button {
+	color: #3c2626;
+	font-weight: bold;
+}
+.list-block .item-content {
+	border-bottom: solid 1px #dfdfdf;
+}
+.replies_date {
+	color: #999;
+	font-size: 12px;
+	margin: 5px 0 6px 0;
+	font-style: oblique;
+}
+.thread_start {
+	background-color: ghostwhite;
+}
+</style>
+
+
+<div class="page-content">
+<div class="list-block">
+	<ul>
+
+	<li ng-repeat="msg in conversation track by $index" >
+	<div class="item-content" ng-click="deletePost($index)" ng-class="{'unread': msg.read_date==null, 'thread_start': msg.isReply==false}">	
+	<div class="item-media entry"><i class="replies f7-icons size-"> {{$index==0 ? 'layers' : 'forward'}}</i></div>
+	<div class="item-inner">
+	<div ng-if="msg.isReply" class=replies_date>Replied on : {{msg.create_date}}</div>
+	<div class="item-title label sender" ng-class="{'red': msg.dari==NIP}" ng-bind="msg.dari==NIP? 'You': msg.dari"></div>
+	<div class="item-input">
+	<div class="item-text" ng-bind-html="msg.pesan"> </div>
+		
+	</div>
+	</div>
+
+		<div ng-if="!(msg.isReply)" style=font-size:12px ng-bind="msg.create_date"></div>
+
+	</div>
+	</li>
+	</ul>
+</div>
+
+</div>
+</li>
+
+
+
+<p class="buttons-row" style=bottom:-14px;position:fixed;z-index:1000;width:100%;>
+  <a href="" ng-click="openReply()" class="button button-raised button-fill color-pink ripple-blue reply-button">
+    BALAS
+  </a>
+
+</p>
+
+</div>
+</div>
+</div>
+</div>
+
+

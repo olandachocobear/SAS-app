@@ -1,0 +1,48 @@
+
+
+SELECT p.kd_push, p.subject, p.dari, p.kepada, d.kd_detail, d.inisial, d.pesan, d.create_date, d.read_date, s.nama_subject FROM tb_push p 
+INNER JOIN tb_subject_push s ON s.kd_subject = p.subject
+INNER JOIN tb_detail_push d ON d.kd_push = p.kd_push 
+WHERE p.kepada = '3175070204930007' AND p.kd_push = 'PUSH0007'
+
+
+SELECT p.kd_push, p.dari, x.inisial as latest_respondent, d.pesan, d.create_date, d.read_date, s.nama_subject as judul FROM tb_push p 
+INNER JOIN tb_subject_push s ON s.kd_subject = p.subject
+INNER JOIN tb_detail_push d ON d.kd_push = p.kd_push 
+INNER JOIN (
+	SELECT kd_push, inisial from tb_detail_push 
+	WHERE kd_push = p.kd_push 
+	ORDER BY create_date desc LIMIT 1
+	) x
+on x.kd_push = p.kd_push
+WHERE p.kepada = '3175070204930007' AND p.kd_push = 'PUSH0007'
+
+
+SELECT p.kd_push, p.dari, d2.inisial as latest_respondent, d.create_date, d.read_date, s.nama_subject as judul FROM tb_push p 
+INNER JOIN tb_subject_push s ON s.kd_subject = p.subject
+INNER JOIN tb_detail_push d ON d.kd_push = p.kd_push 
+INNER JOIN tb_detail_push d2 on d2.kd_detail = (
+	SELECT kd_detail from tb_detail_push 
+ 	WHERE kd_push = p.kd_push
+	ORDER BY create_date desc LIMIT 1
+	)
+WHERE p.kepada = '3175070204930007' --AND p.kd_push = 'PUSH0007'
+ORDER BY create_date DESC
+LIMIT 1
+
+
+SELECT p.kd_push, p.dari, d2.inisial as latest_respondent, pesan, p.create_date, d2.read_date, s.nama_subject as judul FROM tb_push p 
+INNER JOIN tb_subject_push s ON s.kd_subject = p.subject
+INNER JOIN tb_detail_push d2 on d2.kd_detail = (
+	SELECT kd_detail from tb_detail_push 
+ 	WHERE kd_push = p.kd_push
+	ORDER BY create_date desc LIMIT 1
+	) AND d2.kd_push = p.kd_push
+WHERE p.kepada = '3175070204930007' 
+ORDER BY create_date DESC
+
+case:
+latest respondent USER >> dull
+latest respondent ADMIN && read_date NULL >> unread_count++
+latest respondent ADMIN && read_date NOT NULL >> dull
+----------------------------------------------------------------

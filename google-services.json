@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "54343666763",
+    "firebase_url": "https://sas-app-192602.firebaseio.com",
+    "project_id": "sas-app-192602",
+    "storage_bucket": "sas-app-192602.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:54343666763:android:27af10b97b3bd775",
+        "android_client_info": {
+          "package_name": "com.SAS.Workforce"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "54343666763-bitkaik55h2l6rav7cs0etrk2m1ptqpf.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDNoTH9P89Pacx3TAm21z8U7ODa_J_15IU"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

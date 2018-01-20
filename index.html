@@ -1,0 +1,584 @@
+<!DOCTYPE html>
+<html ng-app="absenJobApp">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+<title>My App</title>
+
+<link rel="stylesheet" href="css/framework7.material.min.css">
+<link rel="stylesheet" href="css/framework7.material.colors.min.css">
+
+<link rel="stylesheet" href="css/my-app.css">
+<link rel="stylesheet" href="css/framework7-icons.css">
+
+<!-- for WEINRE debugging.. -->
+<!-- <script src="http://192.168.1.199:8090/target/target-script-min.js#anonymous"></script> -->
+
+</head>
+<body ng-controller="RootCtrl" id='mainView'>
+
+<!-- <div class="toolbar tabbar tabbar-scrollable">
+<div class="toolbar-inner"><a href="#tab-1" class="tab-link active">Tab 1</a><a href="#tab-2" class="tab-link">Tab 2</a><a href="#tab-3" class="tab-link">Tab 3</a><a href="#tab-4" class="tab-link">Tab 4</a><a href="#tab-5" class="tab-link">Tab 5</a><a href="#tab-6" class="tab-link">Tab 6</a><a href="#tab-7" class="tab-link">Tab 7</a><a href="#tab-8" class="tab-link">Tab 8</a><a href="#tab-9" class="tab-link">Tab 9</a><a href="#tab-10" class="tab-link">Tab 10</a><a href="#tab-11" class="tab-link">Tab 11</a><a href="#tab-12" class="tab-link">Tab 12</a></div>
+</div>
+ -->
+
+
+
+<div class="statusbar-overlay"></div>
+
+<div class="panel-overlay"></div>
+
+<div class="panel panel-left panel-reveal">
+<div class="content-block">
+<p>Left panel content goes here</p>
+</div>
+</div>
+
+
+<!-- <div class="panel panel-right panel-cover">
+<div class="content-block">
+<p>Right panel content goes here</p>
+</div>
+</div>
+ -->
+
+  <!-- Right Panel with Cover effect -->
+  <div id=view-5 class="panel panel-right panel-cover" ng-controller="ProfileController" style=z-index:11001>
+    <div class="content-block">
+      <h2>
+         Hello!
+      </h2>
+	  <!--       
+	  <p>{{menu1}}</p>
+      <p>{{menu2}}</p> -->
+
+      <!-- Click on link with "close-panel" class will close panel -->
+	  <p><a href="#" ng-click="gotoWelcome()" class="close-panel">Home</a></p>
+  	  <p><a href="#" ng-click="gotoTasks()" class="close-panel">Inbox</a></p>
+      <p><a href="#" ng-click="logout()" class="close-panel">Log Out</a></p>
+      <!-- Click on link with "open-panel" and data-panel="left" attribute will open Left panel -->
+
+    </div>
+  </div>
+
+
+
+<div class="views tabs toolbar-through">
+
+<div id="view-1" class="view view-main tab ">
+
+<div class="pages">
+
+<div data-page="index-1" class="page" ng-controller="AbsenController">
+
+<div class="page-content">
+<div class="content-block-title">Welcome</div>
+<div class="content-block" style=position:absolute;width:100%;top:29%>
+
+<center>
+      <p class="buttons" style=font-size:30px;width:80%;>
+
+        <a href="#" ng-show="!absenTime" ng-click="scan()" style=font-size:19px class="set-map button button-big button-raised button-fill color-blue ripple-blue">
+          SCAN QR
+          <i class="f7-icons size-22">navigation</i>
+        </a>
+
+		<div ng-show="result.text!=''" style=margin-top:-4px;line-height:14px;margin-bottom:57px;color:gray>
+		<h2>Result:</h2>
+			<p style=margin-top:15px;text-decoration:underline ng-bind="result.text"></p>
+			<div style="font-size:30px;width:72%;margin-top:25px;background:cornsilk;opacity:0.9;color:#c24e4e; padding: 19px; border: 4px ridge khaki; text-shadow:1px 1px 4px #bbb;margin-bottom:15px;" ng-show="result.time">
+				<div style="font-size: 12px;margin-top: -8px;    margin-bottom: 15px;color: black;font-weight:bold;">Absen Time:</div> 
+				<div ng-bind-html="result.time" ></div>
+			</div>
+		</div>
+
+			<div style="font-size:30px;width:72%;margin-top:-25px;background:cornflowerblue;opacity:0.9;color:#c24e4e; padding: 19px; border: 4px ridge khaki; text-shadow:1px 1px 4px #444;margin-bottom:15px;" ng-show="result.checkout">
+				<div style="font-size: 12px; margin-top: -8px;    color: white;font-weight:bold;">Absen Time:</div> 
+				<div ng-bind-html="result.checkout" ></div>
+			</div>
+
+     <p class="buttons" style=font-size:30px;width:80%;>
+        <a href="#" ng-click=boom() ng-show="!result.checkout" id=absenBtn ng-disabled="result.validCode==0" style=font-size:19px class="absen-btn button button-big button-raised button-fill color-red ripple-blue" >
+          {{absen_txt}} 
+		  <span id=countdown_checkout ng-show="checkout_timeleft">
+			<span ng-bind="checkout_timeleft.h">17</span>h<span ng-bind="checkout_timeleft.m">45</span>m<span ng-bind="checkout_timeleft.s">19</span>s
+		  </span>
+         <i class="f7-icons size-22" ng-show="!result.time">alarm</i>
+        </a>
+
+      </p>
+</center>
+
+</div>
+</div>
+</div>
+</div>
+</div>
+
+<div id="view-2" class="view tab active">
+
+<!--
+<div class="navbar">
+  <div class="navbar-inner">
+  <div class="left"><a href="#" class="back link"> <i class="icon icon-back"></i><span>Back</span></a></div>
+<div class="center sliding">About Us</div>
+</div>
+</div>
+ -->
+
+
+
+<!--:: PAGE-2: List Job -->
+  
+<div class="pages navbar-fixed"  >
+<div data-page="index-2" class="page" ng-controller="JobListController">
+<div class="page-content pull-to-refresh-content" data-ptr-distance="55" >
+      <!-- Default pull to refresh layer-->
+    <div class="pull-to-refresh-layer" >
+      <div class="preloader" style=margin-top:15px;margin-bottom:-10px;></div>
+      <div class="pull-to-refresh-arrow"></div>
+    </div>
+
+
+<div class="content-block" style="margin-top:38px;padding:0px 4%">
+
+    <h2 style="text-shadow:1px 1px 2px #ddd;">
+    List Job Hari Ini
+  </h2>
+<!--   <h5 style="font-size:12px;text-shadow:1px 1px 2px #ddd;color:maroon;margin-top:-10px;margin-left:5px;letter-spacing:.8pt;margin-bottom:14px"> -->
+<h5 style="font-size:16.5px;color:maroon;margin-left:-1px;margin-top:-5px; opacity:0.9;position:absolute" ng-bind="tanggal_today">
+    
+  </h5>
+
+<style>
+.started_job {
+background-color:lightgoldenrodyellow
+}
+</style>
+
+  <div class="list-block accordion-list" style=margin-top:57px;>
+    <ul>
+    <li ng-repeat="job in joblist" class="accordion-item " ng-class="{true: 'started_job'} [job.start_at != null]" ><a href="#" class="item-link item-content" >
+	
+	<span class="badge bg-red" ng-show="job.start_at!=null" style=position:absolute;float:right;right:15%;opacity:0.9 >Task started</span>
+
+    <div class="item-inner" >
+    <div class="item-title" ng-bind="job.nama_job"></div>
+    </div></a>
+    <div class="accordion-item-content" style="">
+    <div class="content-block">
+
+      <p ng-bind="job.deskripsi_job"></p>
+      <p class="buttons" style=font-size:30px;width:60%;>
+
+        <a href="#" ng-click="startJob($index)" ng-disabled="job.start_at != null" style=font-size:14px;margin-top:10px class=" button button-raised button-fill color-gray ripple-gray" >
+          MULAI TUGAS
+        </a>
+		</p>
+
+		<hr style=opacity:0.4>
+    </div>
+    </div>
+
+    </li>
+ 
+  </div>
+
+</div>
+</div>
+</div>
+</div>
+</div>
+
+
+
+<div id="view-3" class="view tab">
+
+<!--:: PAGE-3: Checklist Job -->
+
+<div class="pages navbar-fixed" >
+<div data-page="index-3" class="page" ng-controller="JobReportListController">
+<div class="page-content">
+
+<div class="content-block" style="margin-top:38px;padding:0px 4%;opacity:1;">
+  <h2  style="text-shadow:1px 1px 2px #ddd;">
+    Job Check-list
+  </h2>
+<!--   <h5 style="font-size:12px;text-shadow:1px 1px 2px #ddd;color:maroon;margin-top:-10px;margin-left:5px;letter-spacing:.8pt;margin-bottom:14px"> -->
+<h5 style="font-size: 15px;
+    color: maroon;
+    margin-left: 1px;
+    margin-top: -6px;
+    letter-spacing: .2pt;
+    margin-bottom: 6px;">
+    <span id=task_done>{{done}}</span> dari <span id=total_task>{{total}}</span> tugas selesai.
+  </h5>
+  <hr style=color:blue>
+
+<div class="list-block media-list" style=margin-top:-6px> <!-- -33px -->
+
+<ul>
+<a ng-class="{true: 'unstarted'} [job.start_at == null]" ng-href="{{ (job.start_at=='' || job.start_at==null) ? '#' : 'report.html'}}"  ng-click=reportJob($index) class="item-link change-page pindah-page" id=boom ng-repeat="job in jobreportlist">
+
+<style>
+.unstarted {
+	background:oldlace;
+}
+</style>
+
+
+
+<li>
+
+<label class="label-checkbox item-content">
+<input type="checkbox" name="cb-1" ng-checked="job.report_date" disabled>
+  <div class="item-media" style=position:absolute;>
+	<i class="icon icon-form-checkbox "></i>
+  </div>
+<div class="item-inner" style=padding-left:33px;>
+  <div class="item-title-row">
+<div class="item-title" ng-bind="job.nama_job">
+ 
+</div>
+
+<div ng-show="job.report_date" class="item-after">17:14</div>
+</div>
+  <div ng-show="job.report" class="item-text" ng-bind="job.report" style=font-style:oblique></div>
+
+</div>
+
+</li>
+</a>
+
+
+<!--<a href="services.html" class="item-link change-page">
+<li>
+
+<label class="label-checkbox item-content">
+<input type="checkbox" name="cb-1" disabled>
+	<div class="item-media" style=position:absolute;>
+		<i class="icon icon-form-checkbox "></i>
+	</div>
+<div class="item-inner" style=padding-left:33px>
+  <div class="item-title-row">
+	<div class="item-title">
+        Foto Copy Surat Kerjasama</div>
+    </div>
+  </div>
+
+</li>
+</a>-->
+
+
+</ul>
+</div>
+
+
+</div>
+</div>
+</div>
+</div>
+</div>
+<div id="view-4" class="view tab">
+<div class="pages navbar-fixed">
+<div data-page="index-4" class="page" ng-controller="InboxController">
+<div class="navbar">
+	<div class="navbar-inner">
+		<!-- <div class="center">Settings</div> -->
+</div>
+</div>
+
+<div class="page-content">
+<div class="list-block">
+	<ul>
+
+	<li ng-repeat="msg in msg_list" ng-click=readMsg($index) >
+	<a ng-href="message.html">
+	<div class="item-content">
+	<div class="item-media"><i class="f7-icons size-"> {{msg.newFlag ? 'email_fill' : 'email'}}</i></div>
+	<div class="item-inner">
+	<div class="item-title label" ng-bind="msg.dari"></div>
+	<div class="item-input">
+		<input type="text" placeholder="Your name" disabled ng-model="msg.judul">
+	</div>
+	</div>
+		<div ng-if="msg.newFlag" style="font-size:11px; right: 40px;position: absolute;float: right;">NEW</div>
+	</div>
+	</a>
+	</li>
+	</ul>
+</div>
+
+<!-- <div class="content-block">
+<p>Mauris commodo lacus at nisl lacinia, nec facilisis erat rhoncus. Sed eget pharetra nunc. Aenean vitae vehicula massa, sed sagittis ante. Quisque luctus nec velit dictum convallis. Nulla facilisi. Ut sed erat nisi. Donec non dolor massa. Mauris malesuada dolor velit, in suscipit leo consectetur vitae. Duis tempus ligula non eros pretium condimentum. Cras sed dolor odio.</p>
+</div>
+ -->
+
+</div>
+</div>
+</div>
+</div>
+
+
+<div id=toolbar class="toolbar tabbar tabbar-labels" style=margin-top:0px ng-controller="TabController">
+  <div class="toolbar-inner">
+    <a ng-href="{{newCandidateFlag ? '' : '#view-1'}}" ng-class="{disabled: newCandidateFlag}" id="tab-1" class="tab-link active"> <i class="f7-icons size-22">login</i><span class="tabbar-label">ABSEN</span></a>
+    
+	<a ng-href="{{newCandidateFlag ? '' : '#view-2'}}" id="tab-2" ng-class="{disabled: newCandidateFlag}" class="tab-link  "><i class="f7-icons size-29">menu<span class="badge bg-red" style=margin-left:-28px;opacity:0.9 ng-bind="job_count"></span></i><span class="tabbar-label">LIST JOB</span></a>
+
+	<a ng-href="{{newCandidateFlag ? '' : '#view-3'}}" id="tab-3" ng-class="{disabled: newCandidateFlag}" class="tab-link"> <i class="f7-icons size-22">compose</i> <span class="tabbar-label">REPORT</span></a>
+
+	<!-- data-panel="right"  class="open-panel"-->
+	<a href="#view-4" class="tab-link " id="tab-4"> <i class="f7-icons size-27">bell<span class="badge bg-red" style=margin-left:-28px;opacity:0.9 ng-bind="inbox_count"></span></i><span class="tabbar-label">MAILBOX</span></a></div>
+  </div>
+</div>
+
+
+<!-- LOGIN PAGE -->
+
+<style>
+.disabled {
+	background-color: indigo;
+}
+
+#text_blue:focus {
+	border-bottom: 2px solid blue;
+}
+</style>
+
+<div class="picker-modal" id=replyModal ng-controller="MessageController">
+    <!-- Picker Modal Toolbar, optional -->
+    <div class="toolbar" >
+      <div class="toolbar-inner" style="background:deepskyblue" class="button button-raised button-fill color-pink ripple-blue reply-button">
+        <div class="left" style="color:black;font-size:16px;margin-left:5px">
+			<i class="replies f7-icons size-" style="color:black !important; font-size:20px;margin-right:7px;">compose</i><b>Tulis Pesan</b>
+		</div>
+        <div class="right">
+          <a href="#" class="link close-picker" color:maroon><u>Cancel</u></a>
+        </div>
+      </div>
+    </div>
+    <!-- Picker Modal Inner -->
+    <div class="picker-modal-inner">
+      <!-- Picker content -->
+      <div class="content-block">
+
+          <div class="item-content" style=width:85%;margin-top:-23px;margin-left:7%;>
+			<div class="item-inner">
+			  <div class="item-input">
+				<center><b><u>Balasan Anda</u>:</b></center><br>
+				<textarea id=reply_txt ng-model=reply_txt placeholder="" rows=7 style="margin-left:0px;width:100%;margin-top:-9px;"></textarea>
+
+				<div class="center" style="color:black;font-size:16px">
+					<div class="set-map button button-big button-raised button-fill color-blue ripple-blue" style="height:37px;line-height:40px;" ng-click="postReply()">
+						<i class="f7-icons size-" style="font-size:20px;margin-right:6px;">paper_plane</i>
+						<b>Kirim</b>
+					</div>
+				</div>
+
+			  </div>
+			</div>
+		  </div>
+      </div>
+    </div>
+  </div>
+
+<div class="login-screen" id=lamanLogin >
+
+<div data-page="login-screen-embedded" class="page" ng-controller="LoginCtrl">
+	<div class="page-content login-screen-content" style="background: ghostwhite">
+		<div class="login-screen-title"><img src=sas_logo.png width=25% style=margin-bottom:6px></div>
+			<form style=width:89%;margin-left:6%>
+			<div class="list-block inputs-list">
+				<ul>
+				<li class="item-content">
+				<div class="item-inner" >
+				<div class="item-title label">Email</div>
+				<div class="item-input">
+				<input id=txt_email ng-model="txt_email" type="text" name="username" placeholder="enter your email address" style="border-bottom:1px solid rgba(0,33,205,0.9)"/>
+				</div>
+				</div>
+				</li>
+				<li class="item-content">
+				<div class="item-inner">
+				<div class="item-title label">Password</div>
+				<div class="item-input">
+				<input id=txt_pass ng-model=txt_pass type="password" name="password" placeholder="enter your password" style="border-bottom:1px solid rgba(0,33,205,0.9)"/>
+				</div>
+				</div>
+				</li>
+				</ul>
+				</div>
+				<div class="content-block"><a href="#" ng-click="login()" class="button button-big button-outline"><h3 style=margin-top:15px;>Sign In</h3></a></div>
+				<div class="content-block">
+
+				<div class="list-block-label footer-copyright" style=position:absolute;bottom:1%;width:82%>
+				<center>
+				<h5>PT SINERGI ADHIKARYA SEMESTA<br><b>&copy; 2017</b>
+				</h5>
+				</center></div>
+			</div>
+			</form>
+		</div>
+	</div>	
+ </div>
+
+
+<div class="login-screen" id=lamanWelcome >
+<div class="navbar">
+	<div class="navbar-inner">
+		<div class="left"></div>
+			<div class="title inner-padding">Selamat Datang di Aplikasi SAS</div>
+		<div class="right" style=padding-right:13px >
+			<a href=# class="open-panel" data-panel="right" >
+			<i class="f7-icons color-white" style=display:inline-block>bars</i>
+			</a>
+		</div>
+</div>
+</div>
+	<div data-page="login-screen-embedded" class="page" ng-controller="LoginCtrl">
+		<div class="md page-content upper-padding">
+	
+			<div class="block-title card-content-inner" ng-bind="tanggal_today" ></div>
+
+			<div class="card card-content-inner">
+			  <div class="card-content card-content-padding">
+				<div class="swiper-container" style="width: auto">
+						<div class="swiper-wrapper">
+							<div class="swiper-slide"><img src="https://media.licdn.com/mpr/mpr/AAEAAQAAAAAAAAMgAAAAJGU2NTFlZDg2LTg1OTYtNDk4OC04MTUzLWE0NTI3ZDg5M2JhOQ.jpg" style="display:block;width:100%"></div>
+					</div>
+				</div>
+			  </div>
+			</div>
+
+			<div class="card">
+			  <div class="card-header">Hai, {{first_name}} {{last_name}}</div>
+			  <div class="card-content card-content-inner">Ini adalah halaman awal aplikasi Mobile untuk calon atau karyawan yang telah melakukan pendaftaran di PT. SAS. 
+			  
+			  <br>
+			  <br>
+			  
+			  Kami harapkan kesedian Anda untuk mengupdate informasi terbaru tentang data diri anda. Anda Bisa mengupdate data Anda di Website untuk sementara waktu.
+
+			<br>
+			<br>
+				<i>
+					Tips: CV yang baik, besar kemungkinan untuk kami proses secara cepat.
+				</i>
+
+</div>
+			  <div class="card-footer" style=padding-top:13px;padding-bottom:10px>TTd, <br>Management</div>
+			</div>
+
+<br>
+
+		<div class="card demo-card-header-pic">
+		  <div class="card-header">
+			<i class="f7-icons color-blue" style=display:inline-block>email</i>
+			Kotak Pesan
+		  </div>
+		  <div class="card-content card-content-inner">
+			<h3 style=font-weight:normal;margin-top:10px;margin-bottom:5px class="date">Anda memiliki <span style="font-size:20px;color:cornflowerblue;font-weight:bold;font-style:oblique" ng-bind="inbox_count"></span> pesan baru.</h3>
+		  </div>
+		  <div class="card-footer">
+			<a href="#" class="link">Lihat Inbox</a></div>
+		</div>
+
+
+
+		<!-- <div class="card">
+		  <div class="card-content">
+			  <div class="list links-list">
+				  <ul>
+					<li><a href="#">Website PT. SAS <i class="f7-icons color-blue">navigation</i></a></li>
+					<li><a href="#">Kontak PT. SAS <i class="f7-icons color-blue">phone</i></a></li>
+					<li><a href="#">Link 3</a></li>
+					<li><a href="#">Link 4</a></li>
+					<li><a href="#">Link 5</a></li>
+				  </ul>
+			  </div>
+		  </div>
+		</div> -->
+
+	</div>
+ </div>
+
+  <script type="text/javascript" src="js/jquery.min.js"></script>
+        <script type="text/javascript" src="vendors/onsen/js/angular/angular.js"></script> 
+
+  <script type="text/javascript" src="js/framework7.min.js"></script>
+  <script type="text/javascript" src="js/framework7.angular.hook.js"></script>
+
+  <script src="js/countdown.js"></script> 
+  <script src="js/moment.js"></script> 
+  <script src="js/angular-moment.js"></script> 
+
+  
+  <script src="js/ng-cordova.min.js"></script>
+  <script src="cordova.js"></script>
+  
+<!--   <script type="text/javascript" src="PushNotification.js"></script> -->
+
+        
+        <script type="text/javascript" src="js/lodash.underscore.min.js"></script>
+        <script type="text/javascript" src="js/event.js"></script>
+        <script type="text/javascript" src="js/ui-map.js"></script>
+	  	  <script type="text/javascript" src="js/app.js"></script>
+        <script type="text/javascript" src="js/data.js"></script>
+        <script type="text/javascript" src="js/app-local-storage.js"></script>
+        <script type="text/javascript" src="js/angular-local-storage.js"></script>
+        <script type="text/javascript" src="js/angular-sanitize.js"></script>
+        <script type="text/javascript" src="js/nvd3/angular-nvd3.min.js"></script>
+
+<script type="text/javascript" src="js/my-app.js"></script>
+
+<script>
+  app.initialize();
+/*
+function pushInit() {
+		alert('registering device..')
+		var push = PushNotification.init({
+			android: {
+				senderID: "244556120758"
+			}
+		});
+
+		push.on('registration', function(data) {
+
+			// ADD DEVICE TO DATABASE..
+			$.ajax({
+				url: 'http://sinergiadhikarya.co.id/public/push/register',
+				type: "POST",
+				dataType: "json",
+				data: { app: 'SAS Employee', kd_kurir: '', device_id: 'uy', reg_id: data.registrationId},
+
+				success: function(rep) {
+					$("#modem_id").html('Modem ID: ' + data.registrationId.substr(0,11) + '<div id=runtime><span id=timer></span></div>');
+					//alert('registered (msg: ' + rep + ')')
+				},
+				error: function(xhr,status,err) {
+					// alert('failed')
+					alert(xhr.responseText)
+					alert(status)
+					alert(err)
+				}
+			});
+
+		});
+
+		push.on('notification', function(data) {
+		
+			alert('receiving message in front.')
+		});
+
+		push.on('error', function(e) {
+			alert(  e.message );
+		});
+}
+*/
+</script>
+
+</body>
+</html>
