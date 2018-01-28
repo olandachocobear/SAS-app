@@ -52,9 +52,22 @@ lohan olan
 	<splash src="res/screen/android/720_1280.png" platform="android" qualifier="xhdpi" />
 	<splash src="res/screen/android/720_1280.png" platform="android" qualifier="xxhdpi" />
 
-	<!-- move the file json around required phonegap build looking folders -->
+	<!-- move the files around to folder where phonegap build is looking at -->
 	<resource-file src="google-services.json" target="/google-services.json" />
 	<resource-file src="google-services.json" target="/src/debug/google-services.json" />
+    <!-- for push icons... -->
+	<resource-file src="res/icon/ic_stat_assignment.png" target="res/drawable/test.png" />
+	<resource-file src="res/icon/ic_stat_event_note.png" target="res/drawable/schedule.png" />
+	<resource-file src="res/icon/ic_stat_forum.png" target="res/drawable/chats.png" />
+	<resource-file src="res/icon/ic_stat_group.png" target="res/drawable/friends.png" />
+	<resource-file src="res/icon/ic_stat_inbox.png" target="res/drawable/inbox.png" />
+	<resource-file src="res/icon/ic_stat_insert_comment.png" target="res/drawable/new_msg.png" />
+	<!-- for push sounds... -->
+	<resource-file src="res/sound/pikapikasound.mp3" target="res/raw/pikapikasound.mp3" />
+	<resource-file src="res/sound/mushroomsound.mp3" target="res/raw/mushroomsound.mp3" />
+	<resource-file src="res/sound/bellsound.mp3" target="res/raw/bellsound.mp3" />
+	<resource-file src="res/sound/koolaidsound.mp3" target="res/raw/koolaidsound.mp3" />
+	<resource-file src="res/sound/moansound.mp3" target="res/raw/moansound.mp3" />
 </platform>
 
 
