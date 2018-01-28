@@ -42,19 +42,9 @@ var app = {
     onDeviceReady: function() {
         app.receivedEvent('deviceready');
 	
-	angular.bootstrap(document.body, ["absenJobApp"]);
-
-		if (window.device) {
-			alert('Running Cordova ' + window.device.cordova);
-		}
-        
 		// registering Back button
 		document.addEventListener("backbutton", onBackKeyDown, false);
 
-		function onBackKeyDown() {
-			myApp.getCurrentView().router.back();
-			$("#toolbar").css('zIndex',5001)
-		}
 
         // Open any external link with InAppBrowser Plugin
         $(document).on('click', 'a[href^=http], a[href^=https]', function(e){
@@ -67,6 +57,17 @@ var app = {
 
         });
 
+
+	angular.bootstrap(document.body, ["absenJobApp"]);
+
+		if (window.device) {
+			alert('Running Cordova ' + window.device.cordova);
+		}
+        
+		function onBackKeyDown() {
+			myApp.getCurrentView().router.back();
+			$("#toolbar").css('zIndex',5001)
+		}
 		
 
         // Initialize Push Notifications
@@ -731,17 +732,33 @@ var app = {
 		//console.log($$("#txt_email").css());
 
 		$scope.login = function( ) {
-			var url = LoginData.url + '?uname=' + $scope.txt_email + '&pass=' + $scope.txt_pass;
+			var url = LoginData.url //+ '?uname=' + $scope.txt_email + '&pass=' + $scope.txt_pass;
+
+			console.log(url);
 
 			myApp.showIndicator();
 
-			$http({method: 'GET', url: url}).
+			$http({
+				method: 'POST', 
+				url: url,
+				data: {
+					pass: $scope.txt_pass,
+					uname: $scope.txt_email
+				},
+				headers: { 'Content-Type': 'application/x-www-form-urlencoded' },	// not www urlencoded
+				transformRequest: function(obj) { 
+					var str = [];
+					for(var p in obj)
+					str.push(encodeURIComponent(p) + "=" + encodeURIComponent(obj[p]));
+					return str.join("&");
+				}
+			}).
 			success(function(data, status, headers, config) {
 				
 				if (data.status == 200){
 		            myApp.hideIndicator();
 					myApp.loginScreen($("#lamanWelcome"), true) 
-					
+
 					//$scope.checkPushRegistration();
 
 					$scope.pushInit($scope.txt_email);
@@ -834,12 +851,79 @@ var app = {
 			});
 		}
 
+		function confirmSchedule(type,tanggal,id,answer){
+			$.ajax({
+				url: 'http://sinergiadhikarya.co.id/public/api/schedule/'+type+'/',
+				type: "GET",
+				dataType: "text",
+				data: { id:id, answer:answer},
+				success: function(rep) {
+					console.log('schedule confirmed.')
+	
+					if(answer.indexOf('admin')==-1)
+						myApp.alert('<i class="f7-icons size-22">info</i> Anda telah mengkonfirmasi untuk ' + type + ' pada tanggal ' + tanggal + ' pukul ' + answer + '.','Schedule confirmed')
+				},
+				error: function() {
+					toast("Confirm schedule failed. Check connection.", "long", "bottom", -40);
+				}
+			});  
+		}
 
 		function openWelcomeDialog() {
 		 /*myApp.alert('Selamat Datang di Aplikasi SAS', 'WELCOME!', function(){
 			toast("Silahkan melihat apakah ada pesan baru", "long", "bottom", -70);
 		 });*/
+			
+		  /*
+			//THIS IS FOR 'EASY'-TESTING THE SCHEDULE NOTIFS...
+			//-----------------------------------------
+			data = {
+				additionalData: {
+					schedule_type: 'test',
+					schedule_note: 'Harap bawa CV dan Pas Foto.',
+					schedule_date: '31 Desember 2018',
+					schedule_id: 'TESPSKT0002'  // 'ITRV0001'
+				}
+			}
 
+			var notifModal = myApp.modal({
+				title: '<div style=margin-top:-4px>Info Jadwal ' + data.additionalData.schedule_type + '</div>',
+				text: '<hr style="box-shadow:0px -1px 0px #00000085;margin-top:-6px;margin-bottom:5px" /><h3 style=color:brown><i class="f7-icons size-21">calendar</i> &nbsp;' + data.additionalData.schedule_date + '</h3> <h4 style=color:black>Silahkan pilih waktu ' + data.additionalData.schedule_type + ' yang dapat Anda datangi:</h4>',
+				afterText:  '<h4><u>Note</u>:</h4> <h5 style=margin-top:-16px><i>' + data.additionalData.schedule_note +  '</h5></i><hr style="box-shadow:0px -1px 0px #00000022;margin-top:5px;margin-bottom:3px" />',
+				verticalButtons: true,
+				buttons: [
+				  {
+					text: '<i class="f7-icons size-10">alarm</i> <u>10:00 AM</u>',
+					bold: true,
+					onClick: function () {
+					  confirmSchedule(data.additionalData.schedule_type, data.additionalData.schedule_date, data.additionalData.schedule_id, '10:00 am');
+					}
+				  },
+				  {
+					text: '<i class="f7-icons size-10">alarm</i> <u>14:00 PM</u>',
+					bold: true,
+					onClick: function () {
+					  confirmSchedule(data.additionalData.schedule_type, data.additionalData.schedule_date, data.additionalData.schedule_id, '14:00 pm');
+					}
+				  },
+				  {
+					text: '<i class="f7-icons size-14">phone</i> Hubungi Admin',
+					bold: true,
+					onClick: function () {
+  					  confirmSchedule(data.additionalData.schedule_type, data.additionalData.schedule_date, data.additionalData.schedule_id, 'menghubungi admin');
+					}
+				  },
+				  {
+					text: 'Ingatkan nanti lagi',
+					bold: true,
+					onClick: function () {
+					  myApp.alert('<i class="f7-icons size-22">info</i> Pesan ini akan muncul lagi ketika Anda login kembali.','Schedule pending')
+					}
+				  }	
+				]
+			})
+			*/
+			
 			var welcomeModal = myApp.modal({
 				title: 'Welcome!',
 				text: 'Selamat datang di Aplikasi Mobile SAS.',
@@ -860,6 +944,7 @@ var app = {
 				  },
 				]
 			  })
+			 
 			  //myApp.swiper($$(modal).find('.swiper-container'), {pagination: '.swiper-pagination'});
 
 		}
@@ -934,6 +1019,108 @@ var app = {
 			console.log("msg: " + data.message)
 			console.log("additionalData: " + data.additionalData)
 			// data.additionalData
+			
+
+		if(data.additionalData.notif_type == 'schedule') {
+			
+			var notifModal = myApp.modal({
+				title: '<div style=margin-top:-4px>Info Jadwal ' + data.additionalData.schedule_type + '</div>',
+				text: '<hr style="box-shadow:0px -1px 0px #00000085;margin-top:-6px;margin-bottom:5px" /><center><h3 style=color:brown><i class="f7-icons size-21">calendar</i> &nbsp;' + data.additionalData.schedule_date + '</h3></center> <h4 style=color:black>Silahkan pilih waktu ' + data.additionalData.schedule_type + ' yang bisa Anda datangi:</h4>',
+				afterText:  '<h4><u>Note</u>:</h4> <h5 style=margin-top:-14px><i>' + data.additionalData.schedule_note +  '</h5></i><hr style="box-shadow:0px 1px 0px #00000044;margin-top:7px;margin-bottom:4px" />',
+				verticalButtons: true,
+				buttons: [
+				  {
+					text: '<i class="f7-icons size-10">alarm</i> <u>10:00 AM</u>',
+					bold: true,
+					onClick: function () {
+					  confirmSchedule(data.additionalData.schedule_type, data.additionalData.schedule_date, data.additionalData.schedule_id, '10:00 am');
+					}
+				  },
+				  {
+					text: '<i class="f7-icons size-10">alarm</i> <u>14:00 PM</u>',
+					bold: true,
+					onClick: function () {
+					  confirmSchedule(data.additionalData.schedule_type, data.additionalData.schedule_date, data.additionalData.schedule_id, '14:00 pm');
+					}
+				  },
+				  {
+					text: '<i class="f7-icons size-14">phone</i> Hubungi Admin',
+					bold: true,
+					onClick: function () {
+  					  confirmSchedule(data.additionalData.schedule_type, data.additionalData.schedule_date, data.additionalData.schedule_id, 'menghubungi admin');
+					}
+				  },
+				  {
+					text: 'Ingatkan nanti lagi',
+					bold: true,
+					onClick: function () {
+					  myApp.alert('<i class="f7-icons size-22">info</i> Pesan ini akan muncul lagi ketika Anda login kembali.','Schedule pending')
+					}
+				  }	
+				]
+			})
+
+		}
+
+
+		else
+		// if its Inbox message..
+		{
+
+			// if the app is already opened and currently viewed:
+			if(data.additionalData.foreground){
+				//alert('New message: ' + JSON.stringify(data.additionalData))
+				
+				var notifModal = myApp.modal({
+					title: 'Pesan Baru',
+					text: data.message,
+					/*afterText:  '<div class="swiper-container" style="width: auto; margin:15px -15px -15px">'+
+								  '<div class="swiper-pagination"></div>'+
+								  '<div class="swiper-wrapper">'+
+									'<div class="swiper-slide"><img src="https://media.licdn.com/mpr/mpr/AAEAAQAAAAAAAAMgAAAAJGU2NTFlZDg2LTg1OTYtNDk4OC04MTUzLWE0NTI3ZDg5M2JhOQ.jpg" height="150" style="display:block"></div>' +
+									'<div class="swiper-slide"><img src="https://media.licdn.com/mpr/mpr/AAEAAQAAAAAAAAMgAAAAJGU2NTFlZDg2LTg1OTYtNDk4OC04MTUzLWE0NTI3ZDg5M2JhOQ.jpg" height="150" style="display:block"></div>'+
+								  '</div>'+
+								'</div>',*/
+					buttons: [
+					  {
+						text: 'Tutup',
+						bold: true,
+						/*onClick: function () {
+						  myApp.alert('<i class="f7-icons size-22">info</i> Harap periksa Mailbox untuk melihat pesan baru.','Langkah selanjutnya...')
+						}*/
+					  },
+					]
+				})
+
+			}
+
+			// if the app is in Background:
+			else {
+				//alert('Wake from behinddd!! ' + JSON.stringify(data.additionalData))
+				var notifModal = myApp.modal({
+					title: 'Pesan Baru',
+					text: 'Silahkan buka tab Inbox',
+					/*afterText:  '<div class="swiper-container" style="width: auto; margin:15px -15px -15px">'+
+								  '<div class="swiper-pagination"></div>'+
+								  '<div class="swiper-wrapper">'+
+									'<div class="swiper-slide"><img src="https://media.licdn.com/mpr/mpr/AAEAAQAAAAAAAAMgAAAAJGU2NTFlZDg2LTg1OTYtNDk4OC04MTUzLWE0NTI3ZDg5M2JhOQ.jpg" height="150" style="display:block"></div>' +
+									'<div class="swiper-slide"><img src="https://media.licdn.com/mpr/mpr/AAEAAQAAAAAAAAMgAAAAJGU2NTFlZDg2LTg1OTYtNDk4OC04MTUzLWE0NTI3ZDg5M2JhOQ.jpg" height="150" style="display:block"></div>'+
+								  '</div>'+
+								'</div>',*/
+					buttons: [
+					  {
+						text: 'OK',
+						bold: true,
+						/*onClick: function () {
+						  myApp.alert('<i class="f7-icons size-22">info</i> Harap periksa Mailbox untuk melihat pesan baru.','Langkah selanjutnya...')
+						}*/
+					  },
+					]
+				})
+			}
+		}
+		// end of if its a message..
+
 		  });
 		}
 

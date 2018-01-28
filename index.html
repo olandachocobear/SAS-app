@@ -405,7 +405,7 @@ background-color:lightgoldenrodyellow
 				<div class="item-inner">
 				<div class="item-title label">Password</div>
 				<div class="item-input">
-				<input id=txt_pass ng-model=txt_pass type="password" name="password" placeholder="enter your password" style="border-bottom:1px solid rgba(0,33,205,0.9)"/>
+				<input id=txt_pass ng-model=txt_pass type="password" name="password" ng-keyup="$event.keyCode == 13 ? login() : null" placeholder="enter your password" style="border-bottom:1px solid rgba(0,33,205,0.9)"/>
 				</div>
 				</div>
 				</li>
