@@ -48,8 +48,11 @@
   <div id=view-5 class="panel panel-right panel-cover" ng-controller="ProfileController" style=z-index:11001>
     <div class="content-block">
       <h2>
-         Hello!
+         Hello, {{first_name}}!
       </h2>
+		<br><Br>
+
+	  <img ng-src={{avatar}} class="message-avatar" style=width:80px;height:80px>
 	  <!--       
 	  <p>{{menu1}}</p>
       <p>{{menu2}}</p> -->
@@ -284,13 +287,22 @@ background-color:lightgoldenrodyellow
 <div id="view-4" class="view tab">
 <div class="pages navbar-fixed">
 <div data-page="index-4" class="page" ng-controller="InboxController">
+
+<div class="page-content pull-to-refresh-content" data-ptr-distance="55" >
+    <div class="pull-to-refresh-layer" >
+      <div class="preloader" style=margin-top:15px;margin-bottom:-10px;></div>
+      <div class="pull-to-refresh-arrow"></div>
+    </div>
+
+<!-- 
 <div class="navbar">
 	<div class="navbar-inner">
-		<!-- <div class="center">Settings</div> -->
+		<div class="center">Settings</div>
 </div>
 </div>
+ -->
 
-<div class="page-content">
+<div class="content-block">
 <div class="list-block">
 	<ul>
 
@@ -309,6 +321,7 @@ background-color:lightgoldenrodyellow
 	</a>
 	</li>
 	</ul>
+</div>
 </div>
 
 <!-- <div class="content-block">
@@ -385,7 +398,7 @@ background-color:lightgoldenrodyellow
     </div>
   </div>
 
-<div class="login-screen" id=lamanLogin >
+<div class="login-screen" id=lamanLogin data-name="pageLogin">
 
 <div data-page="login-screen-embedded" class="page" ng-controller="LoginCtrl">
 	<div class="page-content login-screen-content" style="background: ghostwhite">
@@ -483,7 +496,7 @@ background-color:lightgoldenrodyellow
 			<h3 style=font-weight:normal;margin-top:10px;margin-bottom:5px class="date">Anda memiliki <span style="font-size:20px;color:cornflowerblue;font-weight:bold;font-style:oblique" ng-bind="inbox_count"></span> pesan baru.</h3>
 		  </div>
 		  <div class="card-footer">
-			<a href="#" class="link">Lihat Inbox</a></div>
+			<a href="#" ng-click="gotoInbox()" class="link">Lihat Inbox</a></div>
 		</div>
 
 
@@ -531,6 +544,8 @@ background-color:lightgoldenrodyellow
         <script type="text/javascript" src="js/angular-local-storage.js"></script>
         <script type="text/javascript" src="js/angular-sanitize.js"></script>
         <script type="text/javascript" src="js/nvd3/angular-nvd3.min.js"></script>
+
+		<script type="text/javascript" src="js/angular-jwt.min.js"></script>
 
 <script type="text/javascript" src="js/my-app.js"></script>
 

@@ -167,7 +167,7 @@ var app = {
 
 
 	//REMOVED 'google-maps'.ns() FROM LIST
-    var app = angular.module('absenJobApp', ['angularMoment', 'ngSanitize','appLocalStorage', 'LocalStorageModule', 'ui.map', 'ui.event', 'nvd3', 'ngCordova']);
+    var app = angular.module('absenJobApp', ['angular-jwt', 'angularMoment', 'ngSanitize', 'appLocalStorage', 'LocalStorageModule', 'ui.map', 'ui.event', 'nvd3', 'ngCordova']);
     
     app.run(function() {
         myApp = new Framework7({
@@ -177,7 +177,13 @@ var app = {
             angular: true,
 			
 			// added 15/01/18
-			swipePanel:	'right'
+			swipePanel:	'right',
+
+			//added 31/01/18
+			routes: [{
+			    path: '/login/',
+				content: 'login-screen.html'
+			}]
         });
        
         mainView = myApp.addView('#mainView', {});
@@ -187,8 +193,6 @@ var app = {
         view3=myApp.addView('#view-3');
         view4=myApp.addView('#view-4');
         view5=myApp.addView('#view-5');
-
-		myApp.loginScreen($("#lamanLogin"), true) 	
 
     })
 
@@ -727,10 +731,10 @@ var app = {
 
 
 
-	app.controller('LoginCtrl', function($scope, $rootScope, $http, LoginData, ProfileData, $cordovaPushV5) {
+	app.controller('LoginCtrl', function($scope, $rootScope, $http, LoginData, ProfileData, $cordovaPushV5, localStorageService) {
 		
 		//console.log($$("#txt_email").css());
-
+		
 		$scope.login = function( ) {
 			var url = LoginData.url //+ '?uname=' + $scope.txt_email + '&pass=' + $scope.txt_pass;
 
@@ -757,11 +761,15 @@ var app = {
 				
 				if (data.status == 200){
 		            myApp.hideIndicator();
+
+					console.log('showing welcomeScreen')
 					myApp.loginScreen($("#lamanWelcome"), true) 
 
 					//$scope.checkPushRegistration();
 
 					$scope.pushInit($scope.txt_email);
+
+					localStorageService.set("usr_token", data._tkn);
 
 					toast("Login Success", "long", "bottom", -70);
 					$rootScope.NIP = data.detail.no_ktp;
@@ -769,7 +777,10 @@ var app = {
 
 					console.log('new candidate? ' + $rootScope.newCandidateFlag ) 
 
-					ProfileData.img = data.detail.foto;
+					//ProfileData.img = data.detail.foto; 
+					// no more storing data to Factory, because we can't make two way binding. MUST USE the costly $watch
+					$rootScope.avatar = data.detail.foto; 
+
 					$rootScope.first_name= data.detail.nama_depan;
 					$rootScope.last_name= data.detail.nama_belakang;
 					
@@ -779,11 +790,19 @@ var app = {
 
 					if ($rootScope.newCandidateFlag)
 					{
+						//refresh view Sidebar
+						view5.router.refreshPage(); 
+
 						angular.element('#tab-1').addClass('disabled');
 						angular.element('#tab-2').addClass('disabled');
 						angular.element('#tab-3').addClass('disabled');
 
 						// layer the App with Welcome Screen..
+						
+						//bugfix logout ga muncul login (30/01)
+						myApp.closeModal($("#lamanLogin"), true) 
+
+
 						myApp.loginScreen($("#lamanWelcome"), true) 
 						console.log('Welcome screen displayed..')
 
@@ -798,11 +817,14 @@ var app = {
 					}
 					else
 					{
+			console.log('employee with NIK detected..')
+
 						view2.router.refreshPage();
 						view3.router.refreshPage();
 						view4.router.refreshPage();
 
-						view5.router.reloadContent();
+						//view5.router.reloadContent();
+						view5.router.refreshPage();
 
 						myApp.showPreloader('Checking Profile..');
 
@@ -815,7 +837,8 @@ var app = {
 								myApp.hidePreloader();
 
 							if(!$rootScope.newCandidateFlag){
-									
+								
+								console.log('focus tab 1');
 								$$("#tab-2").removeClass('active');
 								$$("#tab-1").addClass('active');
 
@@ -823,6 +846,8 @@ var app = {
 									$$("#view-1").addClass('active');
 							}
 							else {
+								
+								console.log('focus tab 2');
 								$$("#tab-2").removeClass('active');
 								$$("#tab-4").addClass('active');
 
@@ -830,9 +855,6 @@ var app = {
 									$$("#view-4").addClass('active');
 							}
 							}, 1500);
-
-							 if($rootScope.newCandidateFlag)
-								 openWelcomeDialog();
 
 						}, 2000);
 					}
@@ -1020,6 +1042,8 @@ var app = {
 			console.log("additionalData: " + data.additionalData)
 			// data.additionalData
 			
+			// refresh the Inbox page...
+			view4.router.refreshPage();
 
 		if(data.additionalData.notif_type == 'schedule') {
 			
@@ -1161,28 +1185,37 @@ var app = {
 			});
 		}
 	*/
-
+		
+		$scope.gotoInbox = function() {
+			myApp.closeModal($("#lamanWelcome"), true) 
+			$rootScope.onWelcome = false;
+		}
 			
 	});
 
 
 	app.controller('ProfileController', function($scope, $rootScope, $http, ProfileData) {
 		
-		$scope.first_name = $rootScope.first_name;
-		$scope.last_name  = ProfileData.last_name;
-		console.log('init sidebar');
+		$rootScope.onWelcome = true;
 
+		console.log('init sidebar')
+		
 		$scope.gotoWelcome= function ( ){
-			myApp.loginScreen($("#lamanWelcome"), true) 
+			myApp.loginScreen($("#lamanWelcome"), true)
+			$rootScope.onWelcome = true;
 		}
 
 		$scope.gotoTasks= function ( ){
-			myApp.closeModal($("#lamanWelcome"), true) 
+			if($scope.onWelcome != undefined && $scope.onWelcome){
+				myApp.closeModal($("#lamanWelcome"), true) 
+				$rootScope.onWelcome = false;
+			}
 		}
 
 		$scope.logout= function ( ){
 			ProfileData = {};
 			$rootScope.NIP = '';
+
 			myApp.loginScreen($("#lamanLogin"), true) 
 		}
 
@@ -1521,6 +1554,17 @@ var app = {
 				alert($scope.msg);
 		});
 
+
+		var ptrContent = $$('.pull-to-refresh-content');
+		ptrContent.on('ptr:refresh', function (e) {
+
+			//$rootScope.job_count = 0;
+			setTimeout(function(){
+				view4.router.refreshPage();
+				myApp.pullToRefreshDone();
+			}, 500);
+		});
+
 		
 		$scope.readMsg = function(index) {
 			$$("#toolbar").css('zIndex',0);
@@ -1787,7 +1831,7 @@ app.config(['$compileProvider', function ($compileProvider) {
     }); 
 
 
-    app.controller("RootCtrl", ["$scope", "$compile", "$rootScope", function($scope, $compile, $rootScope) {
+    app.controller("RootCtrl", ["$scope", "$compile", "$rootScope", "localStorageService", "jwtHelper", function($scope, $compile, $rootScope, localStorageService, jwtHelper) {
         $scope.title = "Framework7(a)";
 		
 		$rootScope.NIP = '123';
@@ -1796,7 +1840,128 @@ app.config(['$compileProvider', function ($compileProvider) {
 		$rootScope.tanggal_today = moment(new Date()).locale("id").format("LL");
 
         var dynamicPageIndex = 0;
-        
+
+			
+		//try to move checking token logic to here...
+		//console.log(localStorageService.get("usr_token"))
+		if (localStorageService.get("usr_token")!=null)
+		{
+			console.log(jwtHelper.decodeToken(localStorageService.get("usr_token")));
+			console.log(jwtHelper.getTokenExpirationDate(localStorageService.get("usr_token")));
+			console.log(jwtHelper.isTokenExpired(localStorageService.get("usr_token")));
+
+			if (jwtHelper.isTokenExpired(localStorageService.get("usr_token")))
+			{
+				myApp.loginScreen($("#lamanLogin"), true);
+			}
+			else {
+				// do the fetch data process here...
+
+				var data = jwtHelper.decodeToken(localStorageService.get("usr_token"))
+
+				console.log(data);
+
+					myApp.loginScreen($("#lamanWelcome"), true) 
+
+					toast("Logging in: " + data.detail.email, "long", "bottom", -70);
+
+					$rootScope.NIP = data.detail.no_ktp;
+					$rootScope.newCandidateFlag = (data.detail.no_NIK=='') ? true : false;
+
+					console.log('new candidate? ' + $rootScope.newCandidateFlag ) 
+
+					//ProfileData.img = data.detail.foto; 
+					// no more storing data to Factory, because we can't make two way binding. MUST USE the costly $watch
+					$rootScope.avatar = data.detail.foto; 
+
+					$rootScope.first_name= data.detail.nama_depan;
+					$rootScope.last_name= data.detail.nama_belakang;
+					
+					//ProfileData.last_name= data.detail.nama_belakang;
+					
+					//console.log(ProfileData);
+
+					if ($rootScope.newCandidateFlag)
+					{
+						//refresh view Sidebar
+						view5.router.refreshPage(); 
+
+						angular.element('#tab-1').addClass('disabled');
+						angular.element('#tab-2').addClass('disabled');
+						angular.element('#tab-3').addClass('disabled');
+
+						// layer the App with Welcome Screen..
+						
+						//bugfix logout ga muncul login (30/01)
+						myApp.closeModal($("#lamanLogin"), true) 
+
+
+						myApp.loginScreen($("#lamanWelcome"), true) 
+						console.log('Welcome screen displayed..')
+
+						view4.router.refreshPage();
+
+						// activing MAILBOX tab
+						$$("#tab-2").removeClass('active');
+								$$("#tab-4").addClass('active');
+
+									$$("#view-2").removeClass('active');
+									$$("#view-4").addClass('active');
+					}
+					else
+					{
+			console.log('employee with NIK detected..')
+
+						view2.router.refreshPage();
+						view3.router.refreshPage();
+						view4.router.refreshPage();
+
+						//view5.router.reloadContent();
+						view5.router.refreshPage();
+
+						myApp.showPreloader('Checking Profile..');
+
+						setTimeout(function(){
+							myApp.hidePreloader()
+							myApp.closeModal($("#lamanLogin"), true) 
+
+							myApp.showPreloader('Updating Tasks..');
+							setTimeout(function() {
+								myApp.hidePreloader();
+
+							if(!$rootScope.newCandidateFlag){
+								
+								console.log('focus tab 1');
+								$$("#tab-2").removeClass('active');
+								$$("#tab-1").addClass('active');
+
+									$$("#view-2").removeClass('active');
+									$$("#view-1").addClass('active');
+							}
+							else {
+								
+								console.log('focus tab 2');
+								$$("#tab-2").removeClass('active');
+								$$("#tab-4").addClass('active');
+
+									$$("#view-2").removeClass('active');
+									$$("#view-4").addClass('active');
+							}
+							}, 1500);
+
+						}, 2000);
+					}
+
+
+				}
+
+
+			}
+			
+		
+		else
+			myApp.loginScreen($("#lamanLogin"), true);
+
     }])
 
 
