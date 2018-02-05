@@ -767,7 +767,7 @@ var app = {
 
 					//$scope.checkPushRegistration();
 
-					$scope.pushInit($scope.txt_email);
+					//$scope.pushInit($scope.txt_email);
 
 					localStorageService.set("usr_token", data._tkn);
 
@@ -799,10 +799,6 @@ var app = {
 
 						// layer the App with Welcome Screen..
 						
-						//bugfix logout ga muncul login (30/01)
-						myApp.closeModal($("#lamanLogin"), true) 
-
-
 						myApp.loginScreen($("#lamanWelcome"), true) 
 						console.log('Welcome screen displayed..')
 
@@ -830,7 +826,6 @@ var app = {
 
 						setTimeout(function(){
 							myApp.hidePreloader()
-							myApp.closeModal($("#lamanLogin"), true) 
 
 							myApp.showPreloader('Updating Tasks..');
 							setTimeout(function() {
@@ -1892,10 +1887,6 @@ app.config(['$compileProvider', function ($compileProvider) {
 
 						// layer the App with Welcome Screen..
 						
-						//bugfix logout ga muncul login (30/01)
-						myApp.closeModal($("#lamanLogin"), true) 
-
-
 						myApp.loginScreen($("#lamanWelcome"), true) 
 						console.log('Welcome screen displayed..')
 
@@ -1923,7 +1914,6 @@ app.config(['$compileProvider', function ($compileProvider) {
 
 						setTimeout(function(){
 							myApp.hidePreloader()
-							myApp.closeModal($("#lamanLogin"), true) 
 
 							myApp.showPreloader('Updating Tasks..');
 							setTimeout(function() {
