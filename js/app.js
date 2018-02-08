@@ -765,8 +765,16 @@ var app = {
 					console.log('showing welcomeScreen')
 					myApp.loginScreen($("#lamanWelcome"), true) 
 
+                    // ANNOUNCEMENT section..
+                    $rootScope.announcement_list = []
+                    addAnnouncement('interview')
+                    addAnnouncement('test');
+
+                    myApp.swiper($$('body').find('.swiper-container'), {pagination: '.swiper-pagination'});
+
 					//$scope.checkPushRegistration();
 
+                    // DONT FORGET to UNCOMMENT!!
 					//$scope.pushInit($scope.txt_email);
 
 					localStorageService.set("usr_token", data._tkn);
@@ -779,7 +787,10 @@ var app = {
 
 					//ProfileData.img = data.detail.foto; 
 					// no more storing data to Factory, because we can't make two way binding. MUST USE the costly $watch
-					$rootScope.avatar = data.detail.foto; 
+					if (data.detail.foto!='')
+                        $rootScope.avatar = data.detail.foto; 
+                    else
+                        $rootScope.avatar = ''
 
 					$rootScope.first_name= data.detail.nama_depan;
 					$rootScope.last_name= data.detail.nama_belakang;
@@ -867,6 +878,36 @@ var app = {
 				toast("An error occured:" + status, "long", "bottom", -70);
 			});
 		}
+
+        function addAnnouncement(sched_type) {
+            var announcement_obj = {}
+
+            if (localStorageService.get(sched_type + '_id')) {
+                announcement_obj.id = localStorageService.get(sched_type + '_id');
+                announcement_obj.date = localStorageService.get(sched_type + '_date');
+                announcement_obj.type = localStorageService.get(sched_type + '_type');
+                announcement_obj.note = localStorageService.get(sched_type + '_note');
+
+                $rootScope.announcement_list.push(announcement_obj);
+            }
+        } 
+
+        function storeSchedule (sched_data){
+            var sched_type = sched_data.schedule_type;
+            localStorageService.set(sched_type + '_id', sched_data.schedule_id);
+            localStorageService.set(sched_type + '_date', sched_data.schedule_date);
+            localStorageService.set(sched_type + '_type', sched_data.schedule_type);
+            localStorageService.set(sched_type + '_note', sched_data.schedule_note);
+
+        }
+
+        function unsetSchedule (sched_type, sched_id) {
+            localStorageService.set(sched_type + '_confirmed', false)
+        }
+
+        function openScheduleDialog (sched_type) {
+            
+        }
 
 		function confirmSchedule(type,tanggal,id,answer){
 			$.ajax({
@@ -962,7 +1003,7 @@ var app = {
 				]
 			  })
 			 
-			  //myApp.swiper($$(modal).find('.swiper-container'), {pagination: '.swiper-pagination'});
+			  myApp.swiper($$(modal).find('.swiper-container'), {pagination: '.swiper-pagination'});
 
 		}
 
@@ -1042,6 +1083,8 @@ var app = {
 
 		if(data.additionalData.notif_type == 'schedule') {
 			
+            storeSchedule(data.additionalData);
+
 			var notifModal = myApp.modal({
 				title: '<div style=margin-top:-4px>Info Jadwal ' + data.additionalData.schedule_type + '</div>',
 				text: '<hr style="box-shadow:0px -1px 0px #00000085;margin-top:-6px;margin-bottom:5px" /><center><h3 style=color:brown><i class="f7-icons size-21">calendar</i> &nbsp;' + data.additionalData.schedule_date + '</h3></center> <h4 style=color:black>Silahkan pilih waktu ' + data.additionalData.schedule_type + ' yang bisa Anda datangi:</h4>',
@@ -1073,7 +1116,9 @@ var app = {
 					text: 'Ingatkan nanti lagi',
 					bold: true,
 					onClick: function () {
-					  myApp.alert('<i class="f7-icons size-22">info</i> Pesan ini akan muncul lagi ketika Anda login kembali.','Schedule pending')
+					  unsetSchedule(data.additionalData.schedule_type, data.additionalData.schedule_id);
+                      
+                      myApp.alert('<i class="f7-icons size-22">info</i> Pesan ini akan muncul lagi ketika Anda login kembali.','Schedule pending')
 					}
 				  }	
 				]

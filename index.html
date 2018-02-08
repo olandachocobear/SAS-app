@@ -456,7 +456,35 @@ background-color:lightgoldenrodyellow
 	
 			<div class="block-title card-content-inner" ng-bind="tanggal_today" ></div>
 
-			<div class="card card-content-inner">
+			<!-- announcement -->
+			<div class="card demo-card-header-pic">
+				<div class="card-header">
+					<i class="f7-icons color-blue" style=display:inline-block>bolt</i>
+					PENGUMUMAN PENTING
+				</div>		
+				
+				<div ng-repeat="announcement in announcement_list" ng-if="announcement_list.length>0">
+					<div class="swiper-container" style="width: auto; margin:15px 5px 0 5px">
+						<div class="swiper-pagination"></div>
+						<div class="swiper-wrapper">
+							<div class="swiper-slide"><img src="https://media.licdn.com/mpr/mpr/AAEAAQAAAAAAAAMgAAAAJGU2NTFlZDg2LTg1OTYtNDk4OC04MTUzLWE0NTI3ZDg5M2JhOQ.jpg" width=400 style="display:block"></div>
+							<div class="swiper-slide"><img src="https://media.licdn.com/mpr/mpr/AAEAAQAAAAAAAAMgAAAAJGU2NTFlZDg2LTg1OTYtNDk4OC04MTUzLWE0NTI3ZDg5M2JhOQ.jpg" width=400 style="display:block"></div>
+						</div>
+					</div>
+				</div>
+
+				<div ng-if="announcement_list.length==0">
+					&nbsp
+					<h4 style=margin-left:4%>Tidak ada pengumuman.</h4>
+					<br>
+				</div>
+
+				
+			</div>
+
+
+			<!-- big shakehand image -->
+			<!-- <div class="card card-content-inner">
 			  <div class="card-content card-content-padding">
 				<div class="swiper-container" style="width: auto">
 						<div class="swiper-wrapper">
@@ -464,9 +492,26 @@ background-color:lightgoldenrodyellow
 					</div>
 				</div>
 			  </div>
-			</div>
+			</div> -->
 
-			<div class="card">
+
+<br>
+
+		<div class="card demo-card-header-pic">
+		  <div class="card-header">
+			<i class="f7-icons color-blue" style=display:inline-block>email</i>
+			Kotak Pesan
+		  </div>
+		  <div class="card-content card-content-inner">
+			<h3 style=font-weight:normal;margin-top:10px;margin-bottom:5px class="date">Anda memiliki <span style="font-size:20px;color:cornflowerblue;font-weight:bold;font-style:oblique" ng-bind="inbox_count"></span> pesan baru.</h3>
+		  </div>
+		  <div class="card-footer">
+			<a href="#" ng-click="gotoInbox()" class="link">Lihat Inbox</a></div>
+		</div>
+
+<br>
+
+<div class="card">
 			  <div class="card-header">Hai, {{first_name}} {{last_name}}</div>
 			  <div class="card-content card-content-inner">Ini adalah halaman awal aplikasi Mobile untuk calon atau karyawan yang telah melakukan pendaftaran di PT. SAS. 
 			  
@@ -484,21 +529,6 @@ background-color:lightgoldenrodyellow
 </div>
 			  <div class="card-footer" style=padding-top:13px;padding-bottom:10px>TTd, <br>Management</div>
 			</div>
-
-<br>
-
-		<div class="card demo-card-header-pic">
-		  <div class="card-header">
-			<i class="f7-icons color-blue" style=display:inline-block>email</i>
-			Kotak Pesan
-		  </div>
-		  <div class="card-content card-content-inner">
-			<h3 style=font-weight:normal;margin-top:10px;margin-bottom:5px class="date">Anda memiliki <span style="font-size:20px;color:cornflowerblue;font-weight:bold;font-style:oblique" ng-bind="inbox_count"></span> pesan baru.</h3>
-		  </div>
-		  <div class="card-footer">
-			<a href="#" ng-click="gotoInbox()" class="link">Lihat Inbox</a></div>
-		</div>
-
 
 
 		<!-- <div class="card">
