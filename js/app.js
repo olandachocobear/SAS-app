@@ -790,10 +790,10 @@ var app = {
 
 					//ProfileData.img = data.detail.foto; 
 					// no more storing data to Factory, because we can't make two way binding. MUST USE the costly $watch
-					if (data.detail.foto!='')
+                    if (data.detail.foto!=null)
                         $rootScope.avatar = data.detail.foto; 
                     else
-                        $rootScope.avatar = ''
+                        $rootScope.avatar = 'data:image/jpeg;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==';
 
 					$rootScope.first_name= data.detail.nama_depan;
 					$rootScope.last_name= data.detail.nama_belakang;
