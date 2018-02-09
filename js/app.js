@@ -767,10 +767,13 @@ var app = {
 
                     // ANNOUNCEMENT section..
                     $rootScope.announcement_list = []
-                    addAnnouncement('interview')
-                    addAnnouncement('test');
+                    var promises = []
+                    promises.push(addAnnouncement('interview'));
+                    promises.push(addAnnouncement('test'));
 
-                    myApp.swiper($$('body').find('.swiper-container'), {pagination: '.swiper-pagination'});
+                    Promise.all(promises).then(function() {
+                        myApp.swiper($$('body').find('.swiper-container'), {pagination: '.swiper-pagination'});
+                    });
 
 					//$scope.checkPushRegistration();
 
