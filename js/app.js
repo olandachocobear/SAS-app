@@ -711,8 +711,8 @@ var app = {
 
 	var $$=Dom7;
 	
-
-	if (window.navigator.userAgent.indexOf('Windows') == -1)
+//Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) 
+	if (window.navigator.userAgent.indexOf('Nexus 5 Build') == -1)
 	
 		var toast = function (msg, duration, loc, fine_adj){
 				window.plugins.toast.showWithOptions({
@@ -763,7 +763,8 @@ var app = {
 		            myApp.hideIndicator();
 
 					console.log('showing welcomeScreen')
-					myApp.loginScreen($("#lamanWelcome"), true) 
+					//myApp.loginScreen($("#lamanWelcome"), true) 
+                    myApp.closeModal($("#lamanLogin"))
 
                     // ANNOUNCEMENT section..
                     $rootScope.announcement_list = []
@@ -1270,7 +1271,7 @@ var app = {
         $scope.msg = "Loading...";
 		$scope.absen_txt = "ABSEN";
 
-        $scope.result = {"text":"", "validCode": 0};
+        $scope.result = {"text":"", "validCode": 0, "validGeo": false};
 
 
 		// Absen click
@@ -1362,11 +1363,31 @@ var app = {
 			return ((str.length==2) ? str: '0'+str);
 		}
 
+
+        $scope.checkGeoloc = function(){
+            initAndCheckMap(function(status){
+                if(status)
+                    $scope.openAbsenControls()
+                else
+                    $scope.alertMoveCloser()
+            })
+        }
+
+        $scope.openAbsenControls = function() {
+            $scope.result.validGeo = true;
+            $scope.result.text = "Geoloc test pass. <br> (You're inside office radius.)"
+        }
+
+        $scope.alertMoveCloser = function() {
+            $scope.result.validGeo = false;
+            $scope.result.text = "Please move closer to office area"
+        }
+
 		$scope.scan = function() {
 
 			// verify if it's on Emulator or Device..
 
-			if(window.navigator.userAgent.indexOf('Windows')>-1)
+			if(window.navigator.userAgent.indexOf('Nexus 5 Build')>-1)
 			{
 					$scope.result.text = "Validating code..";
 					$scope.result.format = 'QR';
@@ -1376,11 +1397,11 @@ var app = {
 					toast('Check-in ID: ' + $scope.result.text, "long", "bottom", -70);
 					//alert(JSON.stringify(result))
 
-					setTimeout(function(){
-						$scope.result.text = 'Ready to absen..';
-						$scope.result.validCode = 1;
-						$scope.$apply();
-					}, 3000);
+					$scope.result.text = 'Checking Geoloc..';
+                        
+                    $scope.result.validCode = 1;
+
+                    $scope.checkGeoloc();
 			}
 
 			else
