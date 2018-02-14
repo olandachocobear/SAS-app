@@ -15,7 +15,9 @@ function initAndCheckMap(callback) {
           zoom: 5,
           center: {lat: 49.25, lng: -123.1},
           mapTypeId: 'roadmap',
-          disableDefaultUI: true          
+          disableDefaultUI: true,
+          gestureHandling: 'none',
+          zoomControl: false
         });
 
         // Construct the circle for each value in citymap.

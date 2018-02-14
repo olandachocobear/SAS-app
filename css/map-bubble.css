@@ -15,7 +15,7 @@
       .popup-bubble-anchor::after {
         content: "";
         position: absolute;
-        top: 0;
+        top: -12px;
         left: 0;
         /* Center the tip horizontally. */
         transform: translate(-50%, 0);
@@ -31,7 +31,7 @@
       .popup-bubble-content {
         font-size:15px;
         position: absolute;
-        top: 0;
+        top: -11px;
         left: 0;
         transform: translate(-50%, -100%);
         /* Style the info window. */
