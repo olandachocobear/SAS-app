@@ -14,6 +14,7 @@
 <link rel="stylesheet" href="css/framework7-icons.css">
 
 <link rel="stylesheet" href="css/map-bubble.css">
+<link rel="stylesheet" href="css/ios-marker.css">
 
 <link href="https://fonts.googleapis.com/css?family=Titillium+Web" rel="stylesheet">
 
@@ -116,7 +117,7 @@
 			</div>
 
      <p class="buttons" style=font-size:30px;width:80%;>
-        <a href="#" ng-click=boom() ng-show="!result.checkout" id=absenBtn ng-disabled="result.validCode==0 || !result.validGeo" style=font-size:19px class="absen-btn button button-big button-raised button-fill color-red ripple-blue" >
+        <a href="#" ng-click=boom() ng-show="!result.checkout" id=absenBtn ng-disabled="!result.validGeo" style=font-size:19px class="absen-btn button button-big button-raised button-fill color-red ripple-blue" >
           {{absen_txt}} 
 		  <span id=countdown_checkout ng-show="checkout_timeleft">
 			<span ng-bind="checkout_timeleft.h">17</span>h<span ng-bind="checkout_timeleft.m">45</span>m<span ng-bind="checkout_timeleft.s">19</span>s

@@ -1309,26 +1309,27 @@ var app = {
 				var now = moment(d);
 				console.log(now);
 
-				var target = now.add(9, 'hour');
+				var target = now.add(5, 'second');
 
 				var checkout_time = new Date(target.format())
 
-				toast('Checkout time: ' + checkout_time, "long", "bottom", -70);
+                toast("Absen Started", "long", "bottom", -70);
+				
+                toast('Checkout time: ' + checkout_time, "long", "bottom", -70);
 
 
 				//starting countdown:
 				var count = new Countdown(checkout_time, d);
 				
 				count.countdown(function(obj) {
-					
-					toast("Absen Started", "long", "bottom", -70);
-					$scope.checkout_timeleft = {};
+
+                    $scope.checkout_timeleft = {};
+
 					$scope.checkout_timeleft.h = (obj.hours < 10 ? '0' : '') + obj.hours;
 					$scope.checkout_timeleft.m = (obj.minutes < 10 ? '0' : '') + obj.minutes;
 					$scope.checkout_timeleft.s = (obj.seconds < 10 ? '0' : '') + obj.seconds;
-
-					
-					var countdownn = setInterval($scope.$apply, 1000);
+				   
+                    countdownn = setInterval($scope.refreshTimer, 1000);
 				});
 			}
 			else if (data.status == 500){
@@ -1340,7 +1341,7 @@ var app = {
 		} // end of bikin absen
 
 
-	else if ( $scope.checkout_timeleft.h == 0 && $scope.checkout_timeleft.m == 0 && $scope.checkout_timeleft.s == 0 )
+	else if ($scope.result.checkoutEnabled)
 	// function checkout...
 	{
 		myApp.confirm('Anda yakin?', 'Konfirmasi', checkOut);
@@ -1353,6 +1354,16 @@ var app = {
 
 } //end of Function boom
 
+        $scope.refreshTimer = function() {
+            $scope.$apply();
+
+            if ($scope.checkout_timeleft.h == 0 && $scope.checkout_timeleft.m == 0 && $scope.checkout_timeleft.s == 0 ) {
+                $scope.result.checkoutEnabled = true;
+                clearInterval(countdownn);
+            }
+
+        }
+    
 		function checkOut() {
 			myApp.alert('You have been checked out.', 'Work\'s Done');
 			
