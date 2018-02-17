@@ -65,6 +65,9 @@ function initAndCheckMap(callback) {
             document.getElementById('map-bubble'));
         popup.setMap(map);
 
+
+        $("#map_pin").css('display', 'block');
+        
         // TO CHECK IF INSIDE POLYGON..
         //alert (google.maps.geometry.poly.containsLocation(marker.getPosition(), cityCircle))
 

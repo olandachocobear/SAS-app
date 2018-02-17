@@ -711,8 +711,8 @@ var app = {
 
 	var $$=Dom7;
 	
-//Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) 
-	if (window.navigator.userAgent.indexOf('Nexus 5 Build') == -1)
+//Mozilla/5.0 (Linux; Android 6.0; Android/MRA58N) 
+	if (window.navigator.userAgent.indexOf('Android') == -1)
 	
 		var toast = function (msg, duration, loc, fine_adj){
 				window.plugins.toast.showWithOptions({
@@ -1270,6 +1270,7 @@ var app = {
         
         $scope.msg = "Loading...";
 		$scope.absen_txt = "ABSEN";
+        $scope.break_txt = "ISTIRAHAT";
 
         $scope.result = {"text":"", "validCode": 0, "validGeo": false};
 
@@ -1386,11 +1387,13 @@ var app = {
 
         $scope.openAbsenControls = function() {
             $scope.result.validGeo = true;
+            $scope.result.geoloc_status = 'OK.'
             $scope.result.text = "Geoloc test pass. <br> (You're inside office radius.)"
         }
 
         $scope.alertMoveCloser = function() {
             $scope.result.validGeo = false;
+            $scope.result.geoloc_status = 'Please go inside office area.'
             $scope.result.text = "Please move closer to office area"
         }
 
@@ -1398,7 +1401,7 @@ var app = {
 
 			// verify if it's on Emulator or Device..
 
-			if(window.navigator.userAgent.indexOf('Nexus 5 Build')>-1)
+			if(window.navigator.userAgent.indexOf('Android')>-1)
 			{
 					$scope.result.text = "Validating code..";
 					$scope.result.format = 'QR';
