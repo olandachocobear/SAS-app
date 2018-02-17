@@ -1266,17 +1266,50 @@ var app = {
 	});
 
 
-	app.controller('AbsenController', function($scope, $http, AbsenData, $rootScope) {
+	app.controller('AbsenController', function($scope, $http, AbsenData, $rootScope, localStorageService) {
         
         $scope.msg = "Loading...";
 		$scope.absen_txt = "ABSEN";
         $scope.break_txt = "ISTIRAHAT";
-
+        $scope.hasAbsen = (localStorageService.get('absenToday') == 1) ? true : false;
+        $scope.absenTime = $scope.hasAbsen ? localStorageService.get('absenTime') : '';
         $scope.result = {"text":"", "validCode": 0, "validGeo": false};
 
+        if($scope.absenTime != '')
+            $scope.countDownStart($scope.absenTime);
+
+        $scope.countDownStart = function(target){
+            //starting countdown:
+                
+                var now = (target=='') ? moment(d) : moment(target);
+                console.log(now);
+
+                var target = now.add(5, 'second');
+
+                var checkout_time = new Date(target.format())
+
+                toast('Checkout time: ' + checkout_time, "long", "bottom", -70);
+
+                var count = new Countdown(checkout_time, new Date());
+                
+                countdownn = setInterval($scope.refreshTimer, 1000);
+
+                count.countdown(function(obj) {
+                   
+
+                    $scope.checkout_timeleft = {};
+
+                    $scope.checkout_timeleft.h = (obj.hours < 10 ? '0' : '') + obj.hours;
+                    $scope.checkout_timeleft.m = (obj.minutes < 10 ? '0' : '') + obj.minutes;
+                    $scope.checkout_timeleft.s = (obj.seconds < 10 ? '0' : '') + obj.seconds;
+                   
+                });
+        }
 
 		// Absen click
 		$scope.boom = function() {
+
+            $scope.hasAbsen = true;
 
 		// check ini mo checkin or checkout
 		if( typeof $scope.checkout_timeleft == 'undefined' )
@@ -1300,38 +1333,20 @@ var app = {
 					"text": "Anda Berhasil Absen!",
 					"time": "Pkl. " + pad_zero(d.getHours()) + ':' + pad_zero(d.getMinutes()) + ':' + pad_zero(d.getSeconds()),
 					"format": "(empty)",
-					"cancelled": false
+					"cancelled": false,
+                    "validGeo": true,
+                    "workHourDone": false,
 				};
 
-				$scope.absen_txt = "CHECK OUT in " ;
+				$scope.absen_txt = "CHECK OUT " ;
 
 				console.log(JSON.stringify($scope.result))
 
-				var now = moment(d);
-				console.log(now);
-
-				var target = now.add(5, 'second');
-
-				var checkout_time = new Date(target.format())
 
                 toast("Absen Started", "long", "bottom", -70);
-				
-                toast('Checkout time: ' + checkout_time, "long", "bottom", -70);
 
+                $scope.countDownStart();
 
-				//starting countdown:
-				var count = new Countdown(checkout_time, d);
-				
-				count.countdown(function(obj) {
-
-                    $scope.checkout_timeleft = {};
-
-					$scope.checkout_timeleft.h = (obj.hours < 10 ? '0' : '') + obj.hours;
-					$scope.checkout_timeleft.m = (obj.minutes < 10 ? '0' : '') + obj.minutes;
-					$scope.checkout_timeleft.s = (obj.seconds < 10 ? '0' : '') + obj.seconds;
-				   
-                    countdownn = setInterval($scope.refreshTimer, 1000);
-				});
 			}
 			else if (data.status == 500){
 	            myApp.hideIndicator();					
@@ -1342,7 +1357,7 @@ var app = {
 		} // end of bikin absen
 
 
-	else if ($scope.result.checkoutEnabled)
+	else if ($scope.result.workHourDone)
 	// function checkout...
 	{
 		myApp.confirm('Anda yakin?', 'Konfirmasi', checkOut);
@@ -1356,20 +1371,32 @@ var app = {
 } //end of Function boom
 
         $scope.refreshTimer = function() {
-            $scope.$apply();
-
             if ($scope.checkout_timeleft.h == 0 && $scope.checkout_timeleft.m == 0 && $scope.checkout_timeleft.s == 0 ) {
-                $scope.result.checkoutEnabled = true;
+                $scope.result.workHourDone = true;
+                console.log($scope.result)
                 clearInterval(countdownn);
+
+
+            //validGeo, workHourDone
+            //console.log ($scope.hasAbsen && $scope.result.workHourDone)
+
+            // console.log((!$scope.result.validGeo && $scope.result.workHourDone))
+            // console.log((!$scope.result.validGeo && !$scope.result.workHourDone))
+            // console.log(($scope.result.validGeo && !$scope.result.workHourDone) )
+            // console.log(($scope.result.validGeo && $scope.result.workHourDone) )
             }
+
+
+            $scope.$apply();
 
         }
     
 		function checkOut() {
-			myApp.alert('You have been checked out.', 'Work\'s Done');
-			
-
+			$scope.checkOut = true;  
+            $scope.$apply()
+            myApp.alert('You have been checked out.', 'Work\'s Done');
 		}
+
 		function pad_zero (original) {
 			str = original.toString();
 			return ((str.length==2) ? str: '0'+str);
@@ -1389,6 +1416,21 @@ var app = {
             $scope.result.validGeo = true;
             $scope.result.geoloc_status = 'OK.'
             $scope.result.text = "Geoloc test pass. <br> (You're inside office radius.)"
+            $scope.result.workHourDone = false;
+
+            console.log($scope.result)
+
+            //validGeo, !workHourDone
+
+            console.log(!($scope.result.validGeo && !$scope.hasAbsen))
+            console.log(($scope.result.workHourDone))
+
+            console.log($scope.hasAbsen && $scope.result.workHourDone)
+
+            console.log((!$scope.result.validGeo && $scope.hasAbsen))
+            console.log((!$scope.result.validGeo && !$scope.hasAbsen))
+            console.log(($scope.result.validGeo && !$scope.hasAbsen) )
+            console.log(($scope.result.validGeo && $scope.hasAbsen) )
         }
 
         $scope.alertMoveCloser = function() {

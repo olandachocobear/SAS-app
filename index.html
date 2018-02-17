@@ -85,7 +85,16 @@
 
 <div class="page-content">
 <div class="content-block-title">Welcome</div>
-<div class="content-block" style=position:absolute;width:100%;top:20%>
+
+<div class="content-block" style=position:absolute;width:100%;top:16.5% ng-show="checkOut">
+	<center>
+	<h2 style=line-height:135%>A day's worth of work is done. Let us get some rest!</h2>
+	</center>
+	<br>
+	<img src=female_work_desk.jpg style=margin-left:-12%;margin-top:-20px>
+</div>	
+
+<div class="content-block" style=position:absolute;width:100%;top:10% ng-show="!checkOut">
 
 <center>
       <p class="buttons" style=font-size:30px;width:80%;>
@@ -97,52 +106,48 @@
       </a>
       <ul class="dropdown-menu">
 
-        <div id="map" style="margin-top:25px;background:green;width:95%;height:280px;"></div>
+        <div id="map" style="margin-top:7px;width:100%;height:260px;"></div>
 		<div id="map-bubble">
 			You are here.
 		 </div>
-		 <div class=pin id=map_pin></div>
+		 <div class=pin id=map_pin style=display:none></div>
 		 <div class=pulse></div>
 
 
-		<div ng-show="result.text!=''" style=padding-top:8px;line-height:14px;color:gray>
+		<div ng-show="result.text!='' && !hasAbsen" style=padding-top:8px;line-height:14px;color:gray>
 			
 			<h2>Result:</h2>
-			<p style=margin-top:10px; ng-bind-html="result.geoloc_status"></p>	
+			<p style="margin-top:0px !important"; ng-bind-html="result.geoloc_status"></p>	
 
-			<div style="font-size:30px;width:72%;margin-top:25px;background:cornsilk;opacity:0.9;color:#c24e4e; padding: 19px; border: 4px ridge khaki; text-shadow:1px 1px 4px #bbb;margin-bottom:15px;" ng-show="result.time">
-				<div style="font-size: 12px;margin-top: -8px;    margin-bottom: 15px;color: black;font-weight:bold;">Absen Time:</div> 
-				<div ng-bind-html="result.time" ></div>
-			</div>
+
 		</div>
 
       </ul>
     </li>
 
-
-			<div style="font-size:30px;width:72%;margin-top:-25px;background:cornflowerblue;opacity:0.9;color:#c24e4e; padding: 19px; border: 4px ridge khaki; text-shadow:1px 1px 4px #444;margin-bottom:15px;" ng-show="result.checkout">
-				<div style="font-size: 12px; margin-top: -8px;    color: white;font-weight:bold;">Absen Time:</div> 
-				<div ng-bind-html="result.checkout" ></div>
+<div class=dropdown>
+			<div style="font-size:30px;width:72%;margin-top:25px;background:cornsilk;opacity:0.9;color:#c24e4e; padding: 19px; border: 4px ridge khaki; text-shadow:1px 1px 4px #bbb;margin-bottom:15px;" ng-show="result.time">
+				<div style="font-size: 13px;margin-top: -8px;    margin-bottom: 15px;color: black;font-weight:bold; text-decoration: underline">Absen Time:</div> 
+				<div ng-bind-html="result.time" style="line-height:85%""></div>
 			</div>
+</div>
 
-
-     <p class="buttons" style=font-size:30px;width:80%;margin-top:30px>
-        <a href="#" ng-click=boom() ng-show="!result.checkout" id=absenBtn ng-disabled="!result.validGeo" style=font-size:19px class="absen-btn button button-big button-raised button-fill color-red ripple-blue" >
-          {{absen_txt}} 
-		  <span id=countdown_checkout ng-show="checkout_timeleft">
-			<span ng-bind="checkout_timeleft.h">17</span>h<span ng-bind="checkout_timeleft.m">45</span>m<span ng-bind="checkout_timeleft.s">19</span>s
+     <p class="buttons" style=font-size:30px;width:95%;margin-top:29px>
+        <a href="#" ng-click=boom() ng-show="!result.checkout" id=absenBtn ng-disabled="(!result.validGeo && !hasAbsen) || (hasAbsen && !result.workHourDone)" style=font-size:19px class="absen-btn button button-big button-raised button-fill color-red ripple-blue">
+          {{absen_txt}}
+		  <span id=countdown_checkout ng-show="hasAbsen&&!result.workHourDone">in 
+			<span ng-bind="checkout_timeleft.h" style=margin-left:0px></span>:
+			<span ng-bind="checkout_timeleft.m" style=margin-left:-2px></span>:
+			<span ng-bind="checkout_timeleft.s" style=margin-left:-2px></span>
 		  </span>
          <i class="f7-icons size-22" ng-show="!result.time">alarm</i>
         </a>
       </p>
 
       <p class="buttons" style=font-size:30px;width:80%;margin-top:20px>
-        <a href="#" ng-click=boom() ng-show="!result.checkout" id=absenBtn ng-disabled="result.validCode==0 || !result.validGeo" style=font-size:19px class="absen-btn button button-big button-raised button-fill color-red ripple-blue" >
+        <a href="#" ng-click=boom() ng-show="!result.checkout" id=absenBtn ng-disabled="result.validCode==0 || !result.validGeo" style=font-size:19px class="absen-btn button button-big button-raised button-fill color-purple ripple-blue" >
           {{break_txt}} 
-		  <span id=countdown_checkout ng-show="checkout_timeleft">
-			<span ng-bind="checkout_timeleft.h">17</span>h<span ng-bind="checkout_timeleft.m">45</span>m<span ng-bind="checkout_timeleft.s">19</span>s
-		  </span>
-         <i class="f7-icons size-22" ng-show="!result.time">alarm</i>
+
         </a>
       </p>
 </center>
