@@ -1266,11 +1266,31 @@ var app = {
 	});
 
 
-	app.controller('AbsenController', function($scope, $http, AbsenData, $rootScope, localStorageService) {
+	app.controller('AbsenController', function($scope, $http, AbsenData, $rootScope, $interval, localStorageService) {
         
+        intervalGeo = ""
         $scope.msg = "Loading...";
 		$scope.absen_txt = "ABSEN";
         $scope.break_txt = "ISTIRAHAT";
+        $scope.geoWatchActive = false;
+        $scope.geoloc_update="Getting location.."
+        $scope.$watch('geoWatchActive', function(newVal){
+            if(newVal){
+                $scope.geoloc_update="Getting location.."
+
+                intervalGeo = $interval(function(){
+                    startGeoWatch(function(insideBubble){
+                        if(insideBubble)
+                            $scope.openAbsenControls()
+                        else
+                            $scope.alertMoveCloser()
+                    })
+                }, 5000);
+            }
+            else
+                if(intervalGeo != undefined)
+                    $interval.cancel(intervalGeo);
+        })   
         $scope.hasAbsen = (localStorageService.get('absenToday') == 1) ? true : false;
         $scope.absenTime = $scope.hasAbsen ? localStorageService.get('absenTime') : '';
         $scope.result = {"text":"", "validCode": 0, "validGeo": false};
@@ -1308,6 +1328,9 @@ var app = {
 
 		// Absen click
 		$scope.boom = function() {
+
+            console.log ($("#geo_toggle").prop);
+            $("#geo_toggle").prop("checked", !($("#geo_toggle").prop("checked")));
 
             $scope.hasAbsen = true;
 
@@ -1370,6 +1393,7 @@ var app = {
 
 } //end of Function boom
 
+
         $scope.refreshTimer = function() {
             if ($scope.checkout_timeleft.h == 0 && $scope.checkout_timeleft.m == 0 && $scope.checkout_timeleft.s == 0 ) {
                 $scope.result.workHourDone = true;
@@ -1413,10 +1437,16 @@ var app = {
         }
 
         $scope.openAbsenControls = function() {
+
+            $interval.cancel(intervalGeo);
+            
+            $scope.geoloc_update="Result:"
             $scope.result.validGeo = true;
             $scope.result.geoloc_status = 'OK.'
             $scope.result.text = "Geoloc test pass. <br> (You're inside office radius.)"
             $scope.result.workHourDone = false;
+
+            $scope.$apply();
 
             console.log($scope.result)
 
@@ -1434,9 +1464,10 @@ var app = {
         }
 
         $scope.alertMoveCloser = function() {
+            $scope.geoloc_update="Result:"
             $scope.result.validGeo = false;
             $scope.result.geoloc_status = 'Please go inside office area.'
-            $scope.result.text = "Please move closer to office area"
+            $scope.$apply();
         }
 
 		$scope.scan = function() {

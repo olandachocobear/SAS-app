@@ -1,19 +1,50 @@
-var citymap = {
+citymap = {
         vancouver: {
-          center: {lat: 49.25, lng: -123.1},
-          population: 6035020
+          center: {lat: -6.208, lng: -106.845},
+          population: 603
         }
       };
 
-function initAndCheckMap(callback) {
+function startGeoWatch(callback) {
+      return navigator.geolocation.getCurrentPosition(function(position){
+          detectNewPos(position, function(answer){
+              callback(answer)
+          })
+        }, function(err){
+              console.log(err)
+          }, { enableHighAccuracy: true });
+
+      console.log('geoWatching nao..')
+      
+      // looping = setInterval(function(){detectNewPos({
+      //   coords: {
+      //     latitude: latitude++,
+      //     longitude: longitude--
+      //   }
+      // })}, 2000)
+}
+
+function detectNewPos(pos, callback) {
+    var lat = pos.coords.latitude;
+    var lng = pos.coords.longitude;
+
+    console.log('new pos! ==> ' + lat + ',' + lng)
+    initAndCheckMap(lat,lng,function(answer){
+        console.log('inside bubble? ' + answer);
+        //return it to top
+        callback(answer);
+    })
+}
+
+function initAndCheckMap(lat,lng,callback) {
 
         // init Map-bubble
-        definePopupClass()
+        //definePopupClass()
 
         // Create the map.
         var map = new google.maps.Map(document.getElementById('map'), {
-          zoom: 5,
-          center: {lat: 49.25, lng: -123.1},
+          zoom: 12,
+          center: {lat: lat, lng: lng},
           mapTypeId: 'roadmap',
           disableDefaultUI: true,
           gestureHandling: 'none',
@@ -30,7 +61,7 @@ function initAndCheckMap(callback) {
           fillColor: '#FF0000',
           fillOpacity: 0.45,
           map: map,
-          center: citymap['vancouver'].center,
+          center: {lat: lat, lng: lng},
           radius: Math.sqrt(citymap['vancouver'].population) * 161
         });
 
@@ -45,29 +76,24 @@ function initAndCheckMap(callback) {
           radius: Math.sqrt(citymap['vancouver'].population) * 181
         });
 
-        var markerLoc = {lat: 37.090, lng: -95.712}
-        var markerLoc2 = {lat: 52.25, lng: -120.1} // vancouver, for testing cirlce
+        var markerLoc = {lat: lat, lng: lng} // vancouver, for testing cirlce
 
         var marker = new google.maps.Marker({
-          position: markerLoc,
-          map: map,
-          title: 'newpos'
-        });
-
-        var marker2 = new google.maps.Marker({
-            position: markerLoc2,
+            position: markerLoc,
             map: map,
-            title: 'newpos'
+            title: 'newpos',
+            visible: false
           });
 
-        var popup = new Popup(
-            new google.maps.LatLng(50.25, -123.1),
-            document.getElementById('map-bubble'));
-        popup.setMap(map);
+
+        // var popup = new Popup(
+        //     new google.maps.LatLng(50.25, -123.1),
+        //     document.getElementById('map-bubble'));
+        // popup.setMap(map);
 
 
         $("#map_pin").css('display', 'block');
-        
+
         // TO CHECK IF INSIDE POLYGON..
         //alert (google.maps.geometry.poly.containsLocation(marker.getPosition(), cityCircle))
 
@@ -76,8 +102,6 @@ function initAndCheckMap(callback) {
           return this.getBounds().contains(latLng) && google.maps.geometry.spherical.computeDistanceBetween(this.getCenter(), latLng) <= this.getRadius();
         }
 
-        //alert(cityCircle.contains(marker2.getPosition()))
-        
-        callback (cityCircle.contains(marker2.getPosition()))
+        callback (cityCircle.contains(marker.getPosition()))
 
 }

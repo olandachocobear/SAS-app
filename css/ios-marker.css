@@ -9,8 +9,8 @@
   -o-transform: rotate(-45deg);
   -ms-transform: rotate(-45deg);
   transform: rotate(-45deg);
-  left: 50%;
-  top: 50%;
+  left: 51%;
+  top: 34%;
   margin: -20px 0 0 -20px;
   -webkit-animation-name: bounce;
   -moz-animation-name: bounce;
@@ -43,8 +43,8 @@
   height: 14px;
   width: 14px;
   position: absolute;
-  left: 50%;
-  top: 50%;
+  left: 51%;
+  top: 31%;
   margin: 12px 0px 0px -31px;
   z-index: 10000 !important;
   -webkit-transform: rotateX(55deg);
