@@ -1269,6 +1269,7 @@ var app = {
 	app.controller('AbsenController', function($scope, $http, AbsenData, $rootScope, $interval, localStorageService) {
         
         intervalGeo = ""
+        intervalWorkHour = ""
         $scope.msg = "Loading...";
 		$scope.absen_txt = "ABSEN";
         $scope.break_txt = "ISTIRAHAT";
@@ -1295,12 +1296,10 @@ var app = {
         $scope.absenTime = $scope.hasAbsen ? localStorageService.get('absenTime') : '';
         $scope.result = {"text":"", "validCode": 0, "validGeo": false};
 
-        if($scope.absenTime != '')
-            $scope.countDownStart($scope.absenTime);
-
         $scope.countDownStart = function(target){
             //starting countdown:
-                
+                var d = new Date();
+
                 var now = (target=='') ? moment(d) : moment(target);
                 console.log(now);
 
@@ -1325,6 +1324,50 @@ var app = {
                    
                 });
         }
+
+        $scope.countWorkHourStart = function(start_time) {
+                console.log('counting work hour starts now...' + start_time)
+                intervalWorkHour = $interval(function(){$scope.addSecondsToWorkhour(start_time)}, 1000);
+        }
+
+        $scope.addSecondsToWorkhour = function(start_time) {
+                console.log('add 1 sec. ' + start_time)
+                if (start_time != undefined){
+                    $scope.absenDuration = moment.duration(moment().diff(moment(start_time)))._data
+                }
+                else{
+                    $scope.absenDuration = {hours: 0, minutes: 0, seconds: 0}
+                }
+
+                // make this dynamic (from DB) Enable the workHourcheckout lock
+                if ($scope.absenDuration.hours == 9)
+                    $scope.result.pastWorkHour = true;
+        }
+
+            
+        // ===============================
+        // IF ABSEN HAS ALREADY STARTED...
+        // *) disable the Absen button
+        // *) Start the count-up
+        // =============================
+        if(localStorageService.get('absenTime') != null) {
+            console.log(localStorageService.get('absenTime'))
+            alert($scope.absenTime);
+            // $scope.countDownStart($scope.absenTime);
+            console.log($scope.absenTime)
+            $scope.countWorkHourStart($scope.absenTime);
+            $scope.absenTime = localStorageService.get('absenTime');
+            
+            $scope.absen_txt = "CHECK OUT " ;
+
+            console.log($scope.validGeo)
+            console.log($scope.hasAbsen)
+            console.log($scope.result.pastWorkHour)
+            console.log (!$scope.result.validGeo && !$scope.hasAbsen)
+            console.log ($scope.hasAbsen && !$scope.result.pastWorkHour)
+
+        }
+
 
 		// Absen click
 		$scope.boom = function() {
@@ -1358,7 +1401,7 @@ var app = {
 					"format": "(empty)",
 					"cancelled": false,
                     "validGeo": true,
-                    "workHourDone": false,
+                    "pastWorkHour": false,
 				};
 
 				$scope.absen_txt = "CHECK OUT " ;
@@ -1369,6 +1412,11 @@ var app = {
                 toast("Absen Started", "long", "bottom", -70);
 
                 $scope.countDownStart();
+                $scope.countWorkHourStart(d);
+                localStorageService.set('absenTime', moment(d).format('YYYY-MM-DD HH:MM'));
+                alert(localStorageService.get('absenTime'))
+                console.log(localStorageService.get('absenTime'))
+                localStorageService.set('absenToday', 1);
 
 			}
 			else if (data.status == 500){
@@ -1380,7 +1428,7 @@ var app = {
 		} // end of bikin absen
 
 
-	else if ($scope.result.workHourDone)
+	else if ($scope.result.pastWorkHour)
 	// function checkout...
 	{
 		myApp.confirm('Anda yakin?', 'Konfirmasi', checkOut);
@@ -1396,7 +1444,7 @@ var app = {
 
         $scope.refreshTimer = function() {
             if ($scope.checkout_timeleft.h == 0 && $scope.checkout_timeleft.m == 0 && $scope.checkout_timeleft.s == 0 ) {
-                $scope.result.workHourDone = true;
+                $scope.result.pastWorkHour = true;
                 console.log($scope.result)
                 clearInterval(countdownn);
 
@@ -1444,7 +1492,7 @@ var app = {
             $scope.result.validGeo = true;
             $scope.result.geoloc_status = 'OK.'
             $scope.result.text = "Geoloc test pass. <br> (You're inside office radius.)"
-            $scope.result.workHourDone = false;
+            $scope.result.pastWorkHour = false;
 
             $scope.$apply();
 
@@ -1453,9 +1501,9 @@ var app = {
             //validGeo, !workHourDone
 
             console.log(!($scope.result.validGeo && !$scope.hasAbsen))
-            console.log(($scope.result.workHourDone))
+            console.log(($scope.result.pastWorkHour))
 
-            console.log($scope.hasAbsen && $scope.result.workHourDone)
+            console.log($scope.hasAbsen && $scope.result.pastWorkHour)
 
             console.log((!$scope.result.validGeo && $scope.hasAbsen))
             console.log((!$scope.result.validGeo && !$scope.hasAbsen))
@@ -2012,7 +2060,7 @@ app.config(['$compileProvider', function ($compileProvider) {
 
 				console.log(data);
 
-					myApp.loginScreen($("#lamanWelcome"), true) 
+					//myApp.loginScreen($("#lamanWelcome"), true) 
 
 					toast("Logging in: " + data.detail.email, "long", "bottom", -70);
 

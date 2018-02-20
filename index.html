@@ -126,16 +126,18 @@
     </li>
 
 <div class=dropdown>
-			<div style="font-size:30px;width:72%;margin-top:25px;background:cornsilk;opacity:0.9;color:#c24e4e; padding: 19px; border: 4px ridge khaki; text-shadow:1px 1px 4px #bbb;margin-bottom:15px;" ng-show="result.time">
-				<div style="font-size: 13px;margin-top: -8px;    margin-bottom: 15px;color: black;font-weight:bold; text-decoration: underline">Absen Masuk:</div> 
-				<div ng-bind-html="result.time" style="line-height:85%""></div>
+			<div style="font-size:30px;width:72%;margin-top:25px;background:cornsilk;opacity:0.9;color:#c24e4e; padding: 19px; border: 4px ridge khaki; text-shadow:1px 1px 4px #bbb;margin-bottom:15px;" ng-show="hasAbsen">
+				<div style="font-size: 18px;margin-top: -7px;    margin-bottom: 15px;color: black;font-weight:bold; text-decoration: underline">Jam Kerja:</div> 
+				<div  style="line-height:85%"">
+					{{absenDuration.hours}}:{{absenDuration.minutes}}:{{absenDuration.seconds}}
+				</div>
 			</div>
 </div>
 
      <p class="buttons" style=font-size:30px;width:95%;margin-top:29px>
-        <a href="#" ng-click=boom() ng-show="!result.checkout" id=absenBtn ng-disabled="(!result.validGeo && !hasAbsen) || (hasAbsen && !result.workHourDone)" style=font-size:19px class="absen-btn button button-big button-raised button-fill color-red ripple-blue">
+        <a href="#" ng-click=boom() ng-show="!result.checkout" id=absenBtn ng-disabled="(!result.validGeo && !hasAbsen) || (hasAbsen && !result.pastWorkHour)" style=font-size:19px class="absen-btn button button-big button-raised button-fill color-red ripple-blue">
           {{absen_txt}}
-		  <span id=countdown_checkout ng-show="hasAbsen&&!result.workHourDone">in 
+		  <span id=countdown_checkout ng-show="hasAbsen&&!result.pastWorkHour">in 
 			<span ng-bind="checkout_timeleft.h" style=margin-left:0px></span>:
 			<span ng-bind="checkout_timeleft.m" style=margin-left:-2px></span>:
 			<span ng-bind="checkout_timeleft.s" style=margin-left:-2px></span>
