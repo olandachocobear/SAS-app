@@ -462,7 +462,7 @@ background-color:lightgoldenrodyellow
 			<!-- announcement -->
 			<div class="card demo-card-header-pic">
 				<div class="card-header" style="font-family: 'Titillium Web'">
-					<i class="f7-icons color-blue" style=display:inline-block>info_fill</i>
+					<i class="f7-icons color-red" style=display:inline-block>info_fill</i>
 					<b>LATEST INFO</b>
 				</div>		
 				
@@ -474,28 +474,55 @@ background-color:lightgoldenrodyellow
 
 
 							    <div class="card-content card-content-padding">
-							        <h2 style="font-weight:normal;margin-top:2px;margin-left:6px;font-family: 'Titillium Web', sans-serif">Test</h2>
+							        <h2 style="font-weight:normal;margin-top:2px;margin-left:6px;font-family: 'Titillium Web', sans-serif">
+										{{announcement.title}}
+										<br ng-if="!announcement.note">
+										<span style="padding-left:4px;font-size:11px;vertical-align:7px" ng-if="!announcement.confirmed">
+											<i class="f7-icons color-red" style=display:inline-block;font-size:9px>info_fill</i>
+											<i><b><u>UNCONFIRMED</u></i></b>
+										</span>									
+									</h2>
 							        
-							        <h5 style="margin-top:-14px; margin-left: 7px; font-size: 14px; font-family: 'Titillium Web', sans-serif; opacity:0.8"># Event Description</h5>
+							        <h5 style="margin-top:-14px; margin-left: 7px; font-size: 14px; font-family: 'Titillium Web', sans-serif; opacity:0.8; width:50%">{{announcement.note}}</h5>
 
-							        <div style='margin-top:-30px;padding-left:10px'>
+							        <div style='margin-top:-35px;margin-bottom:-10px'>
 
 									    <div class=annoucement_icon style=width:30%;display:inline-block>
-									    	<i class="f7-icons color-gray" style="display:inline-block;font-size:60px;opacity:0.52;margin-top:10px;margin-left:8px;">calendar</i>
+									    	<i class="f7-icons color-gray" style="display:inline-block;font-size:89px;opacity:0.52;margin-top:-65px;padding-top:55px;margin-left:15px;vertical-align:-40%">calendar</i>
 									    </div>
 
 										<div class=announcement_content style=width:60%;display:inline-block>
-											<h3 style=float:right;margin-top:-16px;font-size:12px> 
-												<i class="f7-icons color-gray" style="display:inline-block;font-size:18px;">home_fill</i>
-												&nbsp; {{announcement.loc}}
+											<h3 style=margin-right:-10px;color:gray;float:right;margin-top:-2px;font-size:12px> 
+												
+												&nbsp;<u style="border: 1px solid;
+    border-radius: 7px;
+    padding: 3px 7px;
+    background: blanchedalmond;">{{announcement.loc}}</u> 
+												&nbsp;
+												<i class="f7-icons color-gray" style="display:inline-block;font-size:16px;margin-left:-5px !important">home_fill</i>
+												
 											</h3>
 											<br>
-								        	<h2 style="padding-right: 10px; font-family:'Titillium Web', sans-serif;">
+								        	<h2 style="padding-left: 20px; font-family:'Titillium Web', sans-serif; text-align:right">
 								        		{{announcement.day}}
 								        	</h2>
-								        	<h3 style="margin-top:-10px; padding-right: 10px; font-family:'Titillium Web', sans-serif;">
+								        	<h3 style="margin-top:-14px; padding-left: 20px; font-family:'Titillium Web', sans-serif; text-align:right">
 								        		{{announcement.complete_date}}
 								        	</h3>
+																																<h1 ng-if="announcement.hour != '' && announcement.hour != 'hubungi admin'" style="
+											float: right;
+											margin-top: -13px;
+											font-family: 'Titillium Web';
+											font-size: 36px;
+											opacity: 0.88;">
+												<i class="f7-icons color-black" style="display:inline-block;font-size:17px;vertical-align:1px;padding-right:1px">stopwatch</i>
+												{{announcement.hour.substr(0,5)}}
+											</h1>
+
+											<div style=float:right;margin-bottom:31px ng-if="announcement.hour == '' || announcement.hour == 'hubungi admin'">
+												<button ng-click="confirmSchedule(announcement.type)" class="col button button-outline" style="border:1px solid;font-family:'titillium web';margin-top:-3px;margin-right:-4px">CONFIRM SCHEDULE</button>
+											</div>
+
 							        </div>
 							    </div>
 
