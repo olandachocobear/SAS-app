@@ -765,8 +765,11 @@ var app = {
 					console.log('showing welcomeScreen')
 					myApp.loginScreen($("#lamanWelcome"), true) 
 
+					// must init 1st!
+					$rootScope.announcement_list = []
+
 					// COMMENT HERE!!
-					storeSchedule()
+					//storeSchedule()
 
 					// ANNOUNCEMENT section..
 					$scope.fetchAnnouncement()
@@ -775,7 +778,7 @@ var app = {
 					//$scope.checkPushRegistration();
 
                     // DONT FORGET to UNCOMMENT!!
-					$scope.pushInit($scope.txt_email);
+					//$scope.pushInit($scope.txt_email);
 
 					localStorageService.set("usr_token", data._tkn);
 
@@ -880,8 +883,6 @@ var app = {
 		}
 
 		$scope.fetchAnnouncement = function(){
-			$rootScope.announcement_list = []
-
 			var promises = []
 			promises.push(addAnnouncement('interview'));
 			promises.push(addAnnouncement('test'));
@@ -926,6 +927,7 @@ var app = {
 
         function storeSchedule (sched_data){
 			// UNCOMMENT - this is Dummy!
+
 			var sched_data = {
 				"message":"Interview, Tgl: 28-05-2017 Harap konfirm Jam ketersediaan di bawah:",
 				"schedule_type":"interview",
@@ -1565,10 +1567,15 @@ var app = {
 				
 				if (data.status == 200){
 		            myApp.hideIndicator();
+
+					var d=new Date()
+					var hour = (d.getHours()<10) ? '0'+d.getHours() : d.getHours()
+					var minute = (d.getMinutes()<10) ? '0'+d.getMinutes() : d.getMinutes()
+
+					$scope.joblist[$index].start_at = hour+":"+minute
 					
 					view3.router.refreshPage();
 
-					$scope.joblist[$index].start_at = '1'
 					$scope.$apply()
 					
 					
@@ -1863,7 +1870,16 @@ app.config(['$compileProvider', function ($compileProvider) {
 				console.log('reload view3');
 		});
 
-        
+		function pad_zero (original) {
+			str = original.toString();
+			return ((str.length==2) ? str: '0'+str);
+		}
+
+        $scope.getMinute = function(date) {
+			var date = new Date(date)
+			return pad_zero(date.getHours()) + ":" + pad_zero(date.getMinutes())	
+		}
+
         $scope.reportJob = function(index) {
 			
 			/*
@@ -1874,12 +1890,27 @@ app.config(['$compileProvider', function ($compileProvider) {
 			}
 			*/
 
-			$$("#toolbar").css('zIndex',0);
 
             console.log(index)
 			console.log('before:' + $rootScope.job_count)
             var selectedItem = $scope.jobreportlist[index];
-            JobReportData.item = selectedItem;
+			
+			// check if it has started?
+			if (selectedItem.start_at==null)
+			{
+				alert('Task ini belum Anda mulai. Aktifkan lewat menu List Job');
+			}
+			else {
+				// check if it has reported already before
+				if (selectedItem.report_date==null)
+				{
+					JobReportData.item = selectedItem;			
+					$$("#toolbar").css('zIndex',0);
+				}
+				else
+					alert('Anda sudah melaporkan task ini.')
+			}
+    
 			console.log('now:' + $rootScope.job_count)
 
             //$scope.ons.navigator.pushPage('report.html', selectedItem);
@@ -1940,8 +1971,7 @@ app.config(['$compileProvider', function ($compileProvider) {
 		$rootScope.tanggal_today = moment(new Date()).locale("id").format("LL");
 
         var dynamicPageIndex = 0;
-
-			
+		
 		//try to move checking token logic to here...
 		//console.log(localStorageService.get("usr_token"))
 		if (localStorageService.get("usr_token")!=null)
@@ -1966,7 +1996,7 @@ app.config(['$compileProvider', function ($compileProvider) {
 					toast("Logging in: " + data.detail.email, "long", "bottom", -70);
 
 					$rootScope.NIP = data.detail.no_ktp;
-					$rootScope.newCandidateFlag = (data.detail.no_NIK=='') ? true : false;
+					$rootScope.newCandidateFlag = (data.detail.status=='' && data.detail.no_NIK=='') ? true : false;
 
 					console.log('new candidate? ' + $rootScope.newCandidateFlag ) 
 
@@ -1981,6 +2011,18 @@ app.config(['$compileProvider', function ($compileProvider) {
 					
 					//console.log(ProfileData);
 
+					// ANNOUNCEMENT section...
+					$rootScope.announcement_list = []
+
+					var promises = []
+					promises.push(addAnnouncement('interview'));
+					promises.push(addAnnouncement('test'));
+
+					Promise.all(promises).then(function(all_announcement) {
+						console.log(all_announcement)
+						myApp.swiper($$('body').find('.swiper-container'), {pagination: '.swiper-pagination'});
+					});
+					
 					if ($rootScope.newCandidateFlag)
 					{
 						//refresh view Sidebar
@@ -2057,6 +2099,37 @@ app.config(['$compileProvider', function ($compileProvider) {
 		else
 			myApp.loginScreen($("#lamanLogin"), true);
 
+		function addAnnouncement(sched_type) {
+
+            if (localStorageService.get(sched_type + '_id')) {
+                var announcement_obj = getSchedule(sched_type);
+				
+				$rootScope.announcement_list.push(announcement_obj);
+				return announcement_obj;
+			}
+        }
+
+		function getSchedule (type) {
+			var announcement_obj = {}
+
+			announcement_obj.id = localStorageService.get(type + '_id');
+			announcement_obj.date = localStorageService.get(type + '_date');
+			announcement_obj.complete_date = moment(new Date(announcement_obj.date)).locale("id").format("LL");
+			announcement_obj.day = moment(new Date(announcement_obj.date)).locale("id").format("dddd");
+			announcement_obj.hour = localStorageService.get(type + '_hour');
+			announcement_obj.loc = 'Kantor SAS, Slipi';
+			announcement_obj.type = localStorageService.get(type + '_type');
+			announcement_obj.title = 'Jadwal ' + announcement_obj.type;
+			announcement_obj.note = localStorageService.get(type + '_note');
+
+
+			if(announcement_obj.hour.length != 0 && announcement_obj.hour.length < 10)
+				announcement_obj.confirmed = true
+			else
+				announcement_obj.confirmed = false
+
+			return announcement_obj;
+		}
     }])
 
 
