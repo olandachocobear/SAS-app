@@ -99,7 +99,7 @@
 <center>
       <p class="buttons" style=font-size:30px;width:80%;>
 
-<li class="dropdown">
+<li class="dropdown" ng-show="!hasAbsen">
       <input type="checkbox" id=geo_toggle ng-click="geoWatchActive=!geoWatchActive;"/>
       <a href="#" data-toggle="dropdown" style=font-size:19px>
       		CHECK POSITION <i class="f7-icons size-22">navigation</i>
@@ -125,23 +125,33 @@
       </ul>
     </li>
 
-<div class=dropdown>
-			<div style="font-size:30px;width:72%;margin-top:25px;background:cornsilk;opacity:0.9;color:#c24e4e; padding: 19px; border: 4px ridge khaki; text-shadow:1px 1px 4px #bbb;margin-bottom:15px;" ng-show="hasAbsen">
-				<div style="font-size: 18px;margin-top: -7px;    margin-bottom: 15px;color: black;font-weight:bold; text-decoration: underline">Jam Kerja:</div> 
-				<div  style="line-height:85%"">
-					{{absenDuration.hours}}:{{absenDuration.minutes}}:{{absenDuration.seconds}}
-				</div>
+<div class=dropdown ng-show="hasAbsen">
+		<br>
+			<div id=flexible style="font-size:30px;width:80%;margin-top:25px;background:cornsilk;opacity:0.9;color:#c24e4e; padding: 19px; border: 4px ridge khaki; text-shadow:1px 1px 4px #bbb;margin-bottom:15px;" ng-show="hasAbsen">
+				<div style="font-size: 18px;margin-top: -7px;    margin-bottom: 15px;color: black;font-weight:bold; text-decoration: underline">Lama bekerja:</div> 
+				<div  style="line-height:125%"">
+					{{(absenDuration.hours>0) ? absenDuration.hours+' jam' : null }} 
+					{{(absenDuration.minutes>0) ? absenDuration.minutes+' menit' : null}} 
+					{{(absenDuration.seconds>0) ? absenDuration.seconds+' detik' : null}}
+				</div>	
+			</div>
+			<div style=margin-bottom:15px;>
+				<span style="
+					vertical-align:super;
+					font-size:13px">*)</span>Anda baru bisa checkout setelah <span style=font-size:17px><i><b>{{minimumWorkHour}}</i></b>&nbsp; jam bekerja.
 			</div>
 </div>
 
      <p class="buttons" style=font-size:30px;width:95%;margin-top:29px>
         <a href="#" ng-click=boom() ng-show="!result.checkout" id=absenBtn ng-disabled="(!result.validGeo && !hasAbsen) || (hasAbsen && !result.pastWorkHour)" style=font-size:19px class="absen-btn button button-big button-raised button-fill color-red ripple-blue">
           {{absen_txt}}
-		  <span id=countdown_checkout ng-show="hasAbsen&&!result.pastWorkHour">in 
+		  <!-- 
+		  <span id=countdown_checkout ng-show="hasAbsen&&!result.pastWorkHour">in
 			<span ng-bind="checkout_timeleft.h" style=margin-left:0px></span>:
 			<span ng-bind="checkout_timeleft.m" style=margin-left:-2px></span>:
 			<span ng-bind="checkout_timeleft.s" style=margin-left:-2px></span>
 		  </span>
+		   -->
          <i class="f7-icons size-22" ng-show="!result.time">alarm</i>
         </a>
       </p>

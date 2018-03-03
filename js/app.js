@@ -736,6 +736,9 @@ var app = {
 		//console.log($$("#txt_email").css());
 		
 		$scope.login = function( ) {
+            
+            $scope.checkOut = false;
+
 			var url = LoginData.url //+ '?uname=' + $scope.txt_email + '&pass=' + $scope.txt_pass;
 
 			console.log(url);
@@ -762,6 +765,12 @@ var app = {
 				if (data.status == 200){
 		            myApp.hideIndicator();
 
+                    //geoloc..
+                    $rootScope.officeLat = data.detail.latitude;
+                    $rootScope.officeLng = data.detail.longitude;
+                    localStorageService.set('lat', $rootScope.officeLat)
+                    localStorageService.set('lng', $rootScope.officeLng)
+
 					console.log('showing welcomeScreen')
 					//myApp.loginScreen($("#lamanWelcome"), true) 
                     myApp.closeModal($("#lamanLogin"))
@@ -779,13 +788,17 @@ var app = {
 					//$scope.checkPushRegistration();
 
                     // DONT FORGET to UNCOMMENT!!
-					//$scope.pushInit($scope.txt_email);
+					$scope.pushInit($scope.txt_email);
 
 					localStorageService.set("usr_token", data._tkn);
 
 					toast("Login Success", "long", "bottom", -70);
 					$rootScope.NIP = data.detail.no_ktp;
-					$rootScope.newCandidateFlag = (data.detail.status=='' && data.detail.no_NIK=='') ? true : false;
+					// $rootScope.newCandidateFlag = (data.detail.status=='' && data.detail.no_NIK=='') ? true : false;
+                    $rootScope.newCandidateFlag = (data.detail.kd_status_karyawan != 'KDKRY0011') ? true : false;
+                    
+                    $rootScope.minimumWorkHour = data.detail.senin;
+                    localStorageService.set('workhour', $rootScope.minimumWorkHour)
 
 					console.log('new candidate? ' + $rootScope.newCandidateFlag ) 
 
@@ -1238,7 +1251,7 @@ var app = {
 	});
 
 
-	app.controller('ProfileController', function($scope, $rootScope, $http, ProfileData) {
+	app.controller('ProfileController', function($scope, $rootScope, $http, ProfileData, localStorageService) {
 		
 		$rootScope.onWelcome = true;
 
@@ -1269,7 +1282,8 @@ var app = {
 	app.controller('AbsenController', function($scope, $http, AbsenData, $rootScope, $interval, localStorageService) {
         
         intervalGeo = ""
-        intervalWorkHour = ""
+        intervalWorkHour = null;
+        $scope.absenDuration = {}
         $scope.msg = "Loading...";
 		$scope.absen_txt = "ABSEN";
         $scope.break_txt = "ISTIRAHAT";
@@ -1280,7 +1294,7 @@ var app = {
                 $scope.geoloc_update="Getting location.."
 
                 intervalGeo = $interval(function(){
-                    startGeoWatch(function(insideBubble){
+                    startGeoWatch($rootScope.officeLat, $rootScope.officeLng, function(insideBubble){
                         if(insideBubble)
                             $scope.openAbsenControls()
                         else
@@ -1296,6 +1310,32 @@ var app = {
         $scope.absenTime = $scope.hasAbsen ? localStorageService.get('absenTime') : '';
         $scope.result = {"text":"", "validCode": 0, "validGeo": false};
 
+        $scope.refreshTimer = function() {
+            if ($rootScope.minimumWorkHour != ''){
+                // if($rootScope.minimumWorkHour == $scope.absenDuration.hours)
+                //     $scope.result.pastWorkHour = true;
+            }
+            else {
+                if ($scope.checkout_timeleft.h == 0 && $scope.checkout_timeleft.m == 0 && $scope.checkout_timeleft.s == 0 ) {
+                    $scope.result.pastWorkHour = true;
+                    console.log($scope.result)
+                    clearInterval(countdownn);
+
+
+                //validGeo, pastWorkHour
+                //console.log ($scope.hasAbsen && $scope.result.pastWorkHour)
+
+                // console.log((!$scope.result.validGeo && $scope.result.pastWorkHour))
+                // console.log((!$scope.result.validGeo && !$scope.result.pastWorkHour))
+                // console.log(($scope.result.validGeo && !$scope.result.pastWorkHour) )
+                // console.log(($scope.result.validGeo && $scope.result.pastWorkHour) )
+                }
+
+
+                $scope.$apply();
+            }
+        }
+
         $scope.countDownStart = function(target){
             //starting countdown:
                 var d = new Date();
@@ -1307,7 +1347,7 @@ var app = {
 
                 var checkout_time = new Date(target.format())
 
-                toast('Checkout time: ' + checkout_time, "long", "bottom", -70);
+                // toast('Checkout time: ' + checkout_time, "long", "bottom", -70);
 
                 var count = new Countdown(checkout_time, new Date());
                 
@@ -1326,12 +1366,11 @@ var app = {
         }
 
         $scope.countWorkHourStart = function(start_time) {
-                console.log('counting work hour starts now...' + start_time)
                 intervalWorkHour = $interval(function(){$scope.addSecondsToWorkhour(start_time)}, 1000);
         }
 
         $scope.addSecondsToWorkhour = function(start_time) {
-                console.log('add 1 sec. ' + start_time)
+                
                 if (start_time != undefined){
                     $scope.absenDuration = moment.duration(moment().diff(moment(start_time)))._data
                 }
@@ -1340,7 +1379,7 @@ var app = {
                 }
 
                 // make this dynamic (from DB) Enable the workHourcheckout lock
-                if ($scope.absenDuration.hours == 9)
+                if ($scope.absenDuration.hours == $rootScope.minimumWorkHour)
                     $scope.result.pastWorkHour = true;
         }
 
@@ -1352,12 +1391,13 @@ var app = {
         // =============================
         if(localStorageService.get('absenTime') != null) {
             console.log(localStorageService.get('absenTime'))
-            alert($scope.absenTime);
+            // alert('h'+$scope.absenTime);
             // $scope.countDownStart($scope.absenTime);
             console.log($scope.absenTime)
             $scope.countWorkHourStart($scope.absenTime);
             $scope.absenTime = localStorageService.get('absenTime');
             
+            // $scope.countDownStart()
             $scope.absen_txt = "CHECK OUT " ;
 
             console.log($scope.validGeo)
@@ -1411,10 +1451,10 @@ var app = {
 
                 toast("Absen Started", "long", "bottom", -70);
 
-                $scope.countDownStart();
+                // $scope.countDownStart();
                 $scope.countWorkHourStart(d);
-                localStorageService.set('absenTime', moment(d).format('YYYY-MM-DD HH:MM'));
-                alert(localStorageService.get('absenTime'))
+                localStorageService.set('absenTime', moment(d).format('YYYY-MM-DD HH:mm'));
+                
                 console.log(localStorageService.get('absenTime'))
                 localStorageService.set('absenToday', 1);
 
@@ -1441,30 +1481,11 @@ var app = {
 
 } //end of Function boom
 
-
-        $scope.refreshTimer = function() {
-            if ($scope.checkout_timeleft.h == 0 && $scope.checkout_timeleft.m == 0 && $scope.checkout_timeleft.s == 0 ) {
-                $scope.result.pastWorkHour = true;
-                console.log($scope.result)
-                clearInterval(countdownn);
-
-
-            //validGeo, workHourDone
-            //console.log ($scope.hasAbsen && $scope.result.workHourDone)
-
-            // console.log((!$scope.result.validGeo && $scope.result.workHourDone))
-            // console.log((!$scope.result.validGeo && !$scope.result.workHourDone))
-            // console.log(($scope.result.validGeo && !$scope.result.workHourDone) )
-            // console.log(($scope.result.validGeo && $scope.result.workHourDone) )
-            }
-
-
-            $scope.$apply();
-
-        }
     
 		function checkOut() {
-			$scope.checkOut = true;  
+			$scope.checkOut = true;
+            localStorageService.remove('absenToday');
+            localStorageService.remove('absenTime');
             $scope.$apply()
             myApp.alert('You have been checked out.', 'Work\'s Done');
 		}
@@ -1498,7 +1519,7 @@ var app = {
 
             console.log($scope.result)
 
-            //validGeo, !workHourDone
+            //validGeo, !pastWorkHour
 
             console.log(!($scope.result.validGeo && !$scope.hasAbsen))
             console.log(($scope.result.pastWorkHour))
@@ -2065,7 +2086,14 @@ app.config(['$compileProvider', function ($compileProvider) {
 					toast("Logging in: " + data.detail.email, "long", "bottom", -70);
 
 					$rootScope.NIP = data.detail.no_ktp;
-					$rootScope.newCandidateFlag = (data.detail.no_NIK=='') ? true : false;
+					$rootScope.newCandidateFlag = (data.detail.kd_status_karyawan != 'KDKRY0011') ? true : false;
+
+
+                    $rootScope.officeLat = localStorageService.get('lat')
+                    $rootScope.officeLng = localStorageService.get('lng')
+                    $rootScope.minimumWorkHour = localStorageService.get('workhour')
+                    console.log("============"  + $rootScope.minimumWorkHour)
+
 
 					console.log('new candidate? ' + $rootScope.newCandidateFlag ) 
 

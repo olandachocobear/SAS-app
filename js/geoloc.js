@@ -5,9 +5,9 @@ citymap = {
         }
       };
 
-function startGeoWatch(callback) {
+function startGeoWatch(officeLat,officeLng,callback) {
       return navigator.geolocation.getCurrentPosition(function(position){
-          detectNewPos(position, function(answer){
+          detectNewPos(position, officeLat, officeLng, function(answer){
               callback(answer)
           })
         }, function(err){
@@ -24,19 +24,19 @@ function startGeoWatch(callback) {
       // })}, 2000)
 }
 
-function detectNewPos(pos, callback) {
-    var lat = pos.coords.latitude;
-    var lng = pos.coords.longitude;
+function detectNewPos(pos, officeLat, officeLng, callback) {
+    var self_lat = pos.coords.latitude;
+    var self_lng = pos.coords.longitude;
 
-    console.log('new pos! ==> ' + lat + ',' + lng)
-    initAndCheckMap(lat,lng,function(answer){
+    console.log('new pos! ==> ' + self_lat + ',' + self_lng)
+    initAndCheckMap(self_lat,self_lng, parseFloat(officeLat), parseFloat(officeLng), function(answer){
         console.log('inside bubble? ' + answer);
         //return it to top
         callback(answer);
     })
 }
 
-function initAndCheckMap(lat,lng,callback) {
+function initAndCheckMap(lat,lng,officeLat,officeLng,callback) {
 
         // init Map-bubble
         //definePopupClass()
@@ -61,8 +61,8 @@ function initAndCheckMap(lat,lng,callback) {
           fillColor: '#FF0000',
           fillOpacity: 0.45,
           map: map,
-          center: {lat: lat, lng: lng},
-          radius: Math.sqrt(citymap['vancouver'].population) * 161
+          center: {lat: officeLat, lng: officeLng},
+          radius: Math.sqrt(citymap['vancouver'].population) * 61
         });
 
         var cityCircleYellow = new google.maps.Circle({
