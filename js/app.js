@@ -712,7 +712,7 @@ var app = {
 	var $$=Dom7;
 	
 //Mozilla/5.0 (Linux; Android 6.0; Android/MRA58N) 
-	if (window.navigator.userAgent.indexOf('Android') == -1)
+	if (window.navigator.userAgent.indexOf('Android') > -1)
 	
 		var toast = function (msg, duration, loc, fine_adj){
 				window.plugins.toast.showWithOptions({
@@ -1822,20 +1822,23 @@ var app = {
 
 		var item = InboxData.item;
 		
-		var url = InboxData.item_url + '?ktp=' + $rootScope.NIP + '&thread_id=' + item.kd_push;
+		var url = InboxData.item_url + '?ktp=' + $rootScope.NIP + '&thread_id=' + item.kode_compos;
 		console.log (url);
 
 
 		$scope.from = item.dari;
 		$scope.judul = item.judul;
 		
-		$rootScope.thread_id = item.kd_push;
+		$rootScope.thread_id = item.kode_compos; //item.kd_push;
 
 
 		$scope.init = function() {
 			//myApp.showPreloader('Fetching message..');
 
-			$http({method: 'GET', url: url + '?ktp=' + $rootScope.NIP + '&thread_id=' + $rootScope.thread_id}).
+			$http({
+			  method: 'GET', 
+			  url: url  + '?ktp=' + $rootScope.NIP + '&thread_id=' + $rootScope.thread_id
+			}).
 				success(function(data, status, headers, config) {
 
 					myApp.hidePreloader();
