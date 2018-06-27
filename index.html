@@ -136,10 +136,10 @@
 
 
 
-<!--:: PAGE-2: List Job -->
+<!--:: PAGE-2: Request Form -->
   
 <div class="pages navbar-fixed"  >
-<div data-page="index-2" class="page" ng-controller="JobListController">
+<div data-page="index-2" class="page" ng-controller="RequestListController">
 <div class="page-content pull-to-refresh-content" data-ptr-distance="55" >
       <!-- Default pull to refresh layer-->
     <div class="pull-to-refresh-layer" >
@@ -148,53 +148,147 @@
     </div>
 
 
-<div class="content-block" style="margin-top:38px;padding:0px 4%">
+<div class="content-block" style="height:100%;margin-top:38px;padding:0px 4%">
 
     <h2 style="text-shadow:1px 1px 2px #ddd;">
-    List Job Hari Ini
+    Request Forms
   </h2>
 <!--   <h5 style="font-size:12px;text-shadow:1px 1px 2px #ddd;color:maroon;margin-top:-10px;margin-left:5px;letter-spacing:.8pt;margin-bottom:14px"> -->
-<h5 style="font-size:16.5px;color:maroon;margin-left:0px;margin-top:-2px; opacity:0.9;position:absolute" ng-bind="tanggal_today">
-    
-  </h5>
 
+			<div class="item-content" style="margin-top:-23px">
+					<div class="item-media"><i class="icon icon-form-gender"></i></div>
+					<div class="item-inner">
+					<div class="item-title label">Tipe Request:</div>
+						<div data-popover=".popover-forms" class="item-input link open-popover" style="margin-top:6px;border-bottom:2px solid #2196f3; width:100%;">
+							{{selectedForm}}
+						</div>
+					</div>
+					</div>
+
+					<div id=request_popover class="popover popover-forms">
+							<div class="popover-angle"></div>
+							<div class="popover-inner">
+								<div class="list-block">
+									<ul>
+										<li><a href="#" ng-click="changeForm('Lembur')" class="list-button item-link close-popover">Lembur</a></li>
+										<li><a href="#" ng-click="changeForm('Cuti')" class="list-button item-link close-popover">Cuti</a></li>
+									</ul>
+								</div>	
+							</div>
+					</div>
 <style>
 .started_job {
 background-color:lightgoldenrodyellow
 }
 </style>
 
-  <div class="list-block accordion-list" style=margin-top:67px;>
+  <div class="list-block accordion-list" style=margin-top:16px;>
     <ul>
-    <li ng-repeat="job in joblist" class="accordion-item " ng-class="{true: 'started_job'} [job.start_at != null]" ><a href="#" class="item-link item-content" >
-	
-	<span class="badge bg-red" ng-show="job.start_at!=null" style=position:absolute;float:right;right:15%;opacity:0.9 >Task started</span>
 
-    <div class="item-inner" >
-    <div class="item-title" ng-bind="job.nama_job"></div>
-    </div></a>
-    <div class="accordion-item-content" style="">
-    <div class="content-block" style="padding:0 !important">
-	<hr style="opacity:0.4;margin-top:0px;">
-	 <div style="padding: 0 16px">
-		 <h4 style=margin-bottom:-5px;margin-top:21px;padding-left:1px>Task Description:</h4>
-		  <h3 ng-bind="job.deskripsi_job" style="padding-left:8px;font-weight:normal;margin-bottom:27px"></h3>
-		  <p class="buttons" ng-show="job.start_at == null" style=font-size:30px;width:60%>
-			<a href="#" ng-click="startJob($index)" style=font-size:14px;margin-top:10px class=" button button-raised button-fill color-gray ripple-gray" >
-			  MULAI TUGAS
-			</a>
-			</p>
-			<p ng-show="job.start_at != null" style="color:#9c6767;font-size:12px;margin-top:8px;margin-bottom:6px;margin-left:-3px;margin-bottom:4px;text-align:right;opacity:0.9">
-				<i><u><span style=color:#444><b>Started at</u>:</span></i> {{job.start_at}}</b>
-			</p>
+		<div id=empty_lembur ng-show="lemburList.length==0">
+			<center>
+			<br>
+			
 
+			<div>
+					<h2 style=font-size:18px;color:#4e4e4e;margin-top:25%;font-weight:800;opacity:0.4;font-style:oblique>Tidak ada request <i>pending</i>...</h2>
+			</div>
+			<div style="position:absolute;float:left;margin: 15px 42%">
+				<img src=easy-to-use-icon.png style="width: 56px;
+				-webkit-filter: grayscale(30%) hue-rotate(180deg);
+				filter: grayscale(30%) hue-rotate(180deg);
+				opacity: .55;
+				margin-top:-4px;
+				margin-bottom:-16px;">
+			</div>
+			<br><br><br>
+			<div>
+					<h4 style="font-size: 14px;
+							color: #4e4e4e;
+							margin-top: 23px;
+							font-weight: 800;
+							opacity: 0.8;">
+						Anda belum mengajukan<br> permohonan lembur.</h4>
+			</div>
+			<h5 style="
+					text-decoration:underline;
+					font-weight:normal;
+					background:blanchedalmond;
+					padding: 2px 2px 3px 4px;
+					margin-bottom:10px;
+					margin-top:21px;
+					width: 26%;
+					text-align: center;
+					">
+					<!-- <a ng-href="{{ job.start_at!==null&&job.report_date==null ? 'report.html' : '#'}}"	ng-click=reportJob($index) class="item-link change-page pindah-page" id=boom ng-repeat="job in jobreportlist" style=margin-bottom:-18px> -->
+					
+					<a ng-show="lemburList.length!=0" ng-href="request.html" class="item-link change-page pindah-page">Request Lembur</a>
+			</h5>
+		</center>
 		</div>
-		<hr style=opacity:1>
-    </div>
-    </div>
+		
+		<li ng-repeat="lembur in lemburList" style="border-bottom:1px solid;background-color:ghostwhite" class="accordion-item " ng-class="{true: 'started_job'} [job.start_at != null]" >
+			<a href="#" class="item-link item-content" style="padding-left:13px !important" >
+	
+			<span class="badge bg-red" ng-show="job.start_at!=null" style=position:absolute;float:right;right:15%;opacity:0.9 >Task started</span>
 
+			<div class="item-inner" style="display: block;margin-top:7px">
+				<div class="item-title" style=font-size:13px;line-height:22px;>
+						<span style="background-color:blanchedalmond">Request ID</span><br>
+						<span style="font-size:18px">#{{lembur.id}}</span></b>
+				</div>
+				<div style="float: right;
+							/*text-align: right;*/
+							margin-right: -11px;
+							margin-top: -45px;
+							font-size: 12px;
+							opacity: 0.72;
+							line-height: 175%;">
+						<u><b><i>Requested on</u></i></b>:<br>
+						<span style=color:#666;font-size:13px;>{{lembur.tanggal}}</span></b>
+				</div>
+				<h4 style=font-weight:normal;margin-top:13px;margin-bottom:12px;margin-left:0px;font-size:20px;color:brown>{{lembur.keterangan}}</h4>
+				
+			</div>
+			</a>
+			
+			
+			<div class="accordion-item-content" style="">
+				<div class="content-block" style="background: lightslategray;padding:0 !important">
+					<hr style="opacity:0.4;margin-top:0px;">
+					<div style="padding: 0 16px;margin-bottom:10px">
+					<h4 style=color:#efefef;margin-bottom:-11px;margin-top:25px;padding-left:1px;margin-left:4px>Status Request:</h4>
+					<p class="buttons" ng-show="job.start_at == null" style=font-size:30px;width:60%;margin-bottom:31px>
+					<a href="#" ng-click="startJob($index)" style=font-size:14px;margin-top:6px; class=" button button-raised button-fill color-gray ripple-gray" >
+						{{lembur.approval}}
+					</a>
+					</p>
+					<p ng-show="job.start_at != null" style="color:#9c6767;font-size:12px;margin-top:8px;margin-bottom:13px;margin-left:-3px;margin-bottom:4px;text-align:right;opacity:0.9">
+						<i><u><span style=color:#444><b>Started at</u>:</span></i> {{job.start_at}}</b>
+					</p>
+
+					</div>
+					<hr style=opacity:1>
+				</div>
+			</div>
     </li>
  
+		<center>
+		<h5 style="
+					text-decoration:underline;
+					font-weight:normal;
+					background:blanchedalmond;
+					padding: 2px 4px 3px 5px;
+					margin-bottom:10px;
+					margin-top:21px;
+					width: 26%;
+					text-align: center;
+					">
+					<!-- <a ng-href="{{ job.start_at!==null&&job.report_date==null ? 'report.html' : '#'}}"	ng-click=reportJob($index) class="item-link change-page pindah-page" id=boom ng-repeat="job in jobreportlist" style=margin-bottom:-18px> -->
+					
+					<a ng-href="request.html" class="item-link change-page pindah-page">New Request</a>
+			</h5>
+		</center>
   </div>
 
 </div>

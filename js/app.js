@@ -712,7 +712,7 @@ var app = {
 	var $$=Dom7;
 	
 
-	if (window.navigator.userAgent.indexOf('Windows') == -1)
+	if (window.navigator.userAgent.indexOf('Windows') > -1)
 	
 		var toast = function (msg, duration, loc, fine_adj){
 				window.plugins.toast.showWithOptions({
@@ -1614,6 +1614,119 @@ var app = {
         
     });
 
+    app.controller('RequestListController', function($scope, $rootScope, $http, LemburListData) {
+        
+        $scope.msg = "Loading...";
+		$scope.selectedForm = "Lembur";
+
+		$scope.changeForm = function(type){
+			$scope.selectedForm = type;
+		}
+		
+        var fetch_lembur = function(url, callback) {
+			
+			var url = (url=='') ? LemburListData.url : url
+			
+			url += '?nip=' + $rootScope.NIP + '&spk=' + $rootScope.SPK;
+
+			$http({method: 'GET', url: url}).
+			success(function(data, status, headers, config) {
+				
+				$scope.lemburList = data.lembur_reqs;
+
+				console.log("Lembur returned: " + $scope.lemburList.length )
+				if ($scope.lemburList.length < 1)
+				{
+					$scope.msg = "You haven't made any request.";
+				} else {
+					$scope.msg = undefined;
+				}
+				console.log($scope.lemburList);
+				callback (null, 1)
+			}).
+			error(function(data, status, headers, config) {
+				$scope.msg = 'An error occured:' + status;
+				callback (err,null)
+			});
+        }
+
+        fetch_lembur('', function (err,success){
+			if(err)
+				alert($scope.msg);
+		});
+
+/*
+		var count_up = function(target) {
+			if ($rootScope.job_count < target)
+			{
+				$rootScope.job_count = $rootScope.job_count + 1;
+				setTimeout (function(){
+					count_up (target);
+					$rootScope.$apply();
+				}, 300);
+			}
+		}
+		
+		$scope.startJob = function($index) {
+			myApp.showIndicator();
+
+			var url = JobListData.update_url + '?nip=' + $rootScope.NIP + '&kd_job=' + $scope.joblist[$index].id ;
+
+			console.log(url);
+			
+			$http({method: 'GET', url: url}).
+			success(function(data, status, headers, config) {
+				
+				if (data.status == 200){
+		            myApp.hideIndicator();
+
+					var d=new Date()
+					var hour = (d.getHours()<10) ? '0'+d.getHours() : d.getHours()
+					var minute = (d.getMinutes()<10) ? '0'+d.getMinutes() : d.getMinutes()
+
+					$scope.joblist[$index].start_at = hour+":"+minute
+					
+					view3.router.refreshPage();
+
+					$scope.$apply()
+					
+					
+					
+					$rootScope.job_count--;
+					
+					toast("Job started from now", "long", "bottom", -70);
+				}
+
+			}).
+			error(function(data, status, headers, config) {
+	            myApp.hideIndicator();
+				//$scope.msg = 'An error occured:' + status;
+				toast("An error occured:" + status, "long", "bottom", -70);
+			});
+
+        }
+
+		$scope.showDetail = function(index) {
+            var selectedItem = $scope.categories[index];
+            CategoriesData.selectedItem = selectedItem;
+            $scope.ons.navigator.pushPage('category-posts.html', selectedItem);
+        }
+
+		var ptrContent = $$('.pull-to-refresh-content');
+		ptrContent.on('ptr:refresh', function (e) {
+
+			$rootScope.job_count = 0;
+			setTimeout(function(){
+				init('', function(err,success){
+					if(success)
+						myApp.pullToRefreshDone();
+				});
+			}, 500);
+		});
+   
+		*/
+    });
+
 
     app.controller('InboxController', function($scope, $rootScope, $http, InboxData) {
         
@@ -1952,6 +2065,67 @@ app.config(['$compileProvider', function ($compileProvider) {
 						$("#toolbar").css('zIndex',5001)
 						myApp.hidePreloader();
 					}, 1000);
+				}
+			}).
+			error(function(data, status, headers, config) {
+				$scope.msg = 'An error occured:' + status;
+			});			
+		}
+        
+    }); 
+    app.controller('RequestController', function($scope, $http, $rootScope, LemburListData, $cordovaDatePicker) {
+                
+		// var item = JobReportData.item;
+		
+		// $scope.nama_job = item.nama_job;
+		// $scope.deskripsi_job = item.deskripsi_job
+		// $scope.start_at = item.start_at
+		// $scope.kode_detail_job = item.kode_detail_job
+		// $scope.id = item.id
+
+			$scope.openDatePicker = function() {
+			var options = {
+				date: new Date(),
+				mode: 'date', // or 'time'
+				minDate: new Date() - 10000,
+				allowOldDates: true,
+				allowFutureDates: false,
+				doneButtonLabel: 'DONE',
+				doneButtonColor: '#F2F3F4',
+				cancelButtonLabel: 'CANCEL',
+				cancelButtonColor: '#000000',
+				// androidTheme: this.datePicker.ANDROID_THEMES.THEME_DEVICE_DEFAULT_LIGHT
+			};
+		
+			$cordovaDatePicker.show(options).then(function(date){
+				$scope.tanggal_req=date.getFullYear()+'-'+(date.getMonth()+1)+'-'+date.getDate();
+
+				alert($scope.tanggal_req);
+			});	
+		}
+		
+		$scope.reqDone = function() {
+			myApp.showPreloader('Updating Lembur..');
+
+			var url = LemburListData.submit_url + "?nip=" + $rootScope.NIP + "&jam=" + $scope.lama_lembur + "&keterangan=" + $scope.detail_lembur + "&tgl=" + $scope.tanggal_req;
+			
+			$http({method: 'POST', url: url}).
+			success(function(data, status, headers, config) {
+				
+				if (data.status == 200) {
+					
+					view3.router.refreshPreviousPage();
+					setTimeout(function() {
+						//view3.router.back({
+						//	reloadPrevious: true
+						//});
+
+						view2.router.back()
+						view2.refreshPage();
+						
+						$("#toolbar").css('zIndex',5001)
+						myApp.hidePreloader();
+					}, 600);
 				}
 			}).
 			error(function(data, status, headers, config) {

@@ -147,6 +147,7 @@ lohan olan
 <gap:plugin name="cordova-plugin-barcodescanner" source="npm" spec='0.7.1'/>
 
 <gap:plugin name="cordova-plugin-x-toast" source="npm" />
+<gap:plugin name="cordova-plugin-datepicker" source="npm" />
 
 
 </widget>

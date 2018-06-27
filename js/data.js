@@ -222,6 +222,21 @@ absenJobApp.factory('JobListData', function() {
     return data;
 });
 
+// Lembur List Data
+absenJobApp.factory('LemburListData', function() {
+    //var data = { url: 'http://dev-journal.lelang.today/json/joblist.json', letterLimit: 100 };
+	
+	var data = { //url: 'http://sinergiadhikarya.co.id/public/api/joblist/', 
+                dummy_url: 'http://localhost/sas-attendance/json/lemburlist.json', 
+                // url: 'http://localhost/SAS-api/lembur/list/index.php',
+                url: 'http://sinergiadhikarya.co.id/public/api/lembur/list/',
+                // submit_url: 'http://localhost/SAS-api/lembur/new',
+                submit_url: 'http://sinergiadhikarya.co.id/public/api/lembur/new/',
+				 update_url: 'http://sinergiadhikarya.co.id/public/api/joblist/start/',
+	letterLimit: 100 };    
+    return data;
+});
+
 // Job ReportList Data
 absenJobApp.factory('JobReportListData', function() {
     //var data = { url: 'http://dev-journal.lelang.today/json/jobreportlist.json', letterLimit: 100 };
@@ -245,7 +260,9 @@ absenJobApp.factory('InboxData', function() {
 
 
 absenJobApp.factory('LoginData', function() {
-    var data = { url: 'http://sinergiadhikarya.co.id/public/api/login/'};
+    var data = { url: 'http://sinergiadhikarya.co.id/public/api/login/'
+                // url: 'http://localhost/SAS-api/login/index.php'
+            };
    
     return data;
 });

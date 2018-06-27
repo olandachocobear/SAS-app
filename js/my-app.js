@@ -22,7 +22,7 @@ var view4=myApp.addView('#view-4');
 // ==================
 $('body').on('click', '.item-link.change-page', function(){
   setTimeout(function(){
-    //$("#toolbar").css('zIndex',0)
+    $("#toolbar").css('zIndex',0)
   },0)
 });
 
@@ -77,6 +77,17 @@ $('body').on('click', '.back.link', function(){
             myApp.hideIndicator();
 
             view3.router.back();
+            $("#toolbar").css('zIndex',5001)
+
+        }, 850);
+
+  });
+  $('body').on('click', '.close_request', function(){
+     myApp.showIndicator();
+        setTimeout(function () {
+            myApp.hideIndicator();
+
+            view2.router.back();
             $("#toolbar").css('zIndex',5001)
 
         }, 850);
