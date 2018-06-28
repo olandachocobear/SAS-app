@@ -201,7 +201,7 @@
     List Job Hari Ini
   </h2>
 <!--   <h5 style="font-size:12px;text-shadow:1px 1px 2px #ddd;color:maroon;margin-top:-10px;margin-left:5px;letter-spacing:.8pt;margin-bottom:14px"> -->
-<h5 style="font-size:16.5px;color:maroon;margin-left:-1px;margin-top:-5px; opacity:0.9;position:absolute" ng-bind="tanggal_today">
+<h5 style="font-size:16.5px;color:maroon;margin-left:0px;margin-top:-2px; opacity:0.9;position:absolute" ng-bind="tanggal_today">
     
   </h5>
 
@@ -211,7 +211,7 @@ background-color:lightgoldenrodyellow
 }
 </style>
 
-  <div class="list-block accordion-list" style=margin-top:57px;>
+  <div class="list-block accordion-list" style=margin-top:67px;>
     <ul>
     <li ng-repeat="job in joblist" class="accordion-item " ng-class="{true: 'started_job'} [job.start_at != null]" ><a href="#" class="item-link item-content" >
 	
@@ -221,17 +221,22 @@ background-color:lightgoldenrodyellow
     <div class="item-title" ng-bind="job.nama_job"></div>
     </div></a>
     <div class="accordion-item-content" style="">
-    <div class="content-block">
+    <div class="content-block" style="padding:0 !important">
+	<hr style="opacity:0.4;margin-top:0px;">
+	 <div style="padding: 0 16px">
+		 <h4 style=margin-bottom:-5px;margin-top:21px;padding-left:1px>Task Description:</h4>
+		  <h3 ng-bind="job.deskripsi_job" style="padding-left:8px;font-weight:normal;margin-bottom:27px"></h3>
+		  <p class="buttons" ng-show="job.start_at == null" style=font-size:30px;width:60%>
+			<a href="#" ng-click="startJob($index)" style=font-size:14px;margin-top:10px class=" button button-raised button-fill color-gray ripple-gray" >
+			  MULAI TUGAS
+			</a>
+			</p>
+			<p ng-show="job.start_at != null" style="color:#9c6767;font-size:12px;margin-top:8px;margin-bottom:6px;margin-left:-3px;margin-bottom:4px;text-align:right;opacity:0.9">
+				<i><u><span style=color:#444><b>Started at</u>:</span></i> {{job.start_at}}</b>
+			</p>
 
-      <p ng-bind="job.deskripsi_job"></p>
-      <p class="buttons" style=font-size:30px;width:60%;>
-
-        <a href="#" ng-click="startJob($index)" ng-disabled="job.start_at != null" style=font-size:14px;margin-top:10px class=" button button-raised button-fill color-gray ripple-gray" >
-          MULAI TUGAS
-        </a>
-		</p>
-
-		<hr style=opacity:0.4>
+		</div>
+		<hr style=opacity:1>
     </div>
     </div>
 
@@ -262,47 +267,76 @@ background-color:lightgoldenrodyellow
 <!--   <h5 style="font-size:12px;text-shadow:1px 1px 2px #ddd;color:maroon;margin-top:-10px;margin-left:5px;letter-spacing:.8pt;margin-bottom:14px"> -->
 <h5 style="font-size: 15px;
     color: maroon;
-    margin-left: 1px;
-    margin-top: -6px;
+    margin-left: 0px;
+    margin-top: -2px;
     letter-spacing: .2pt;
-    margin-bottom: 6px;">
+    margin-bottom: 26px;">
     <span id=task_done>{{done}}</span> dari <span id=total_task>{{total}}</span> tugas selesai.
   </h5>
   <hr style=color:blue>
 
+  <link rel="stylesheet" href="css/tab_slider.css">
+
+  <div class="toggle_radio">
+    <input type="radio" class="toggle_option" id="first_toggle" name="toggle_option">
+    <input type="radio" checked class="toggle_option" id="second_toggle" name="toggle_option">
+    <label for="first_toggle"><p>Main Job</p></label>
+    <label for="second_toggle"><p>Additional</p></label>
+    <div class="toggle_option_slider">
+	</div>
+  </div>
+
+  <hr style=color:blue>
+
+<br>
 <div class="list-block media-list" style=margin-top:-6px> <!-- -33px -->
 
+
 <ul>
-<a ng-class="{true: 'unstarted'} [job.start_at == null]" ng-href="{{ (job.start_at=='' || job.start_at==null) ? '#' : 'report.html'}}"  ng-click=reportJob($index) class="item-link change-page pindah-page" id=boom ng-repeat="job in jobreportlist">
+<!-- <a ng-class="{true: 'unstarted'} [job.start_at == null]" ng-href="{{ job.start_at!==null&&job.report_date==null ? 'report.html' : '#'}}"  ng-disabled="job.start_at==null" ng-click=reportJob($index) class="item-link change-page pindah-page" id=boom ng-repeat="job in jobreportlist"> -->
+<a ng-href="{{ job.start_at!==null&&job.report_date==null ? 'report.html' : '#'}}"	ng-click=reportJob($index) class="item-link change-page pindah-page" id=boom ng-repeat="job in jobreportlist" style=margin-bottom:-18px>
+
 
 <style>
 .unstarted {
 	background:oldlace;
 }
+.completed {
+	background: mediumspringgreen;/* gainsboro; */ /* springgreen; */
+}
 </style>
 
 
 
-<li>
+<li ng-class="{'unstarted': (job.start_at == null), 'completed': (job.start_at!=null && job.report_date!=null) }">
 
 <label class="label-checkbox item-content">
 <input type="checkbox" name="cb-1" ng-checked="job.report_date" disabled>
   <div class="item-media" style=position:absolute;>
-	<i class="icon icon-form-checkbox "></i>
+	<i ng-show="job.start_at" class="icon icon-form-checkbox "></i>
+	<i ng-show="job.start_at==null" class="f7-icons " style=color:firebrick;margin-left:0px>lock_fill</i>
   </div>
 <div class="item-inner" style=padding-left:33px;>
   <div class="item-title-row">
-<div class="item-title" ng-bind="job.nama_job">
+<div class="item-title" ng-bind="job.nama_job" style="font-weight:bold;color:#555" ng-class="{'striked': (job.report_date != null)}">
  
 </div>
 
-<div ng-show="job.report_date" class="item-after">17:14</div>
+<style>
+.striked {
+	text-decoration: line-through;
+	font-style: oblique;
+}
+</style>
+
+<div ng-show="job.report_date" class="item-after">{{getMinute(job.report_date)}}</div>
 </div>
-  <div ng-show="job.report" class="item-text" ng-bind="job.report" style=font-style:oblique></div>
+  <div ng-show="job.report" class="item-text" ng-bind="job.report"></div>
 
 </div>
 
 </li>
+<hr style=visibility:hidden>
 </a>
 
 
@@ -509,7 +543,7 @@ background-color:lightgoldenrodyellow
 			<!-- announcement -->
 			<div class="card demo-card-header-pic">
 				<div class="card-header" style="font-family: 'Titillium Web'">
-					<i class="f7-icons color-blue" style=display:inline-block>info_fill</i>
+					<i class="f7-icons color-red" style=display:inline-block>info_fill</i>
 					<b>LATEST INFO</b>
 				</div>		
 				
@@ -521,28 +555,55 @@ background-color:lightgoldenrodyellow
 
 
 							    <div class="card-content card-content-padding">
-							        <h2 style="font-weight:normal;margin-top:2px;margin-left:6px;font-family: 'Titillium Web', sans-serif">Test</h2>
+							        <h2 style="font-weight:normal;margin-top:2px;margin-left:6px;font-family: 'Titillium Web', sans-serif">
+										{{announcement.title}}
+										<br ng-if="!announcement.note">
+										<span style="padding-left:4px;font-size:11px;vertical-align:7px" ng-if="!announcement.confirmed">
+											<i class="f7-icons color-red" style=display:inline-block;font-size:9px>info_fill</i>
+											<i><b><u>UNCONFIRMED</u></i></b>
+										</span>									
+									</h2>
 							        
-							        <h5 style="margin-top:-14px; margin-left: 7px; font-size: 14px; font-family: 'Titillium Web', sans-serif; opacity:0.8"># Event Description</h5>
+							        <h5 style="margin-top:-14px; margin-left: 7px; font-size: 14px; font-family: 'Titillium Web', sans-serif; opacity:0.8; width:50%">{{announcement.note}}</h5>
 
-							        <div style='margin-top:-30px;padding-left:10px'>
+							        <div style='margin-top:-35px;margin-bottom:-10px'>
 
 									    <div class=annoucement_icon style=width:30%;display:inline-block>
-									    	<i class="f7-icons color-gray" style="display:inline-block;font-size:60px;opacity:0.52;margin-top:10px;margin-left:8px;">calendar</i>
+									    	<i class="f7-icons color-gray" style="display:inline-block;font-size:89px;opacity:0.52;margin-top:-65px;padding-top:55px;margin-left:15px;vertical-align:-40%">calendar</i>
 									    </div>
 
 										<div class=announcement_content style=width:60%;display:inline-block>
-											<h3 style=float:right;margin-top:-16px;font-size:12px> 
-												<i class="f7-icons color-gray" style="display:inline-block;font-size:18px;">home_fill</i>
-												&nbsp; {{announcement.loc}}
+											<h3 style=margin-right:-10px;color:gray;float:right;margin-top:-2px;font-size:12px> 
+												
+												&nbsp;<u style="border: 1px solid;
+    border-radius: 7px;
+    padding: 3px 7px;
+    background: blanchedalmond;">{{announcement.loc}}</u> 
+												&nbsp;
+												<i class="f7-icons color-gray" style="display:inline-block;font-size:16px;margin-left:-5px !important">home_fill</i>
+												
 											</h3>
 											<br>
-								        	<h2 style="padding-right: 10px; font-family:'Titillium Web', sans-serif;">
+								        	<h2 style="padding-left: 20px; font-family:'Titillium Web', sans-serif; text-align:right">
 								        		{{announcement.day}}
 								        	</h2>
-								        	<h3 style="margin-top:-10px; padding-right: 10px; font-family:'Titillium Web', sans-serif;">
+								        	<h3 style="margin-top:-14px; padding-left: 20px; font-family:'Titillium Web', sans-serif; text-align:right">
 								        		{{announcement.complete_date}}
 								        	</h3>
+																																<h1 ng-if="announcement.hour != '' && announcement.hour != 'hubungi admin'" style="
+											float: right;
+											margin-top: -13px;
+											font-family: 'Titillium Web';
+											font-size: 36px;
+											opacity: 0.88;">
+												<i class="f7-icons color-black" style="display:inline-block;font-size:17px;vertical-align:1px;padding-right:1px">stopwatch</i>
+												{{announcement.hour.substr(0,5)}}
+											</h1>
+
+											<div style=float:right;margin-bottom:31px ng-if="announcement.hour == '' || announcement.hour == 'hubungi admin'">
+												<button ng-click="confirmSchedule(announcement.type)" class="col button button-outline" style="border:1px solid;font-family:'titillium web';margin-top:-3px;margin-right:-4px">CONFIRM SCHEDULE</button>
+											</div>
+
 							        </div>
 							    </div>
 
