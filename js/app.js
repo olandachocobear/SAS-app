@@ -788,7 +788,7 @@ var app = {
 					//$scope.checkPushRegistration();
 
                     // DONT FORGET to UNCOMMENT!!
-					$scope.pushInit($scope.txt_email);
+					// $scope.pushInit($scope.txt_email);
 
 					localStorageService.set("usr_token", data._tkn);
 
@@ -1886,7 +1886,7 @@ var app = {
 
 		var item = InboxData.item;
 		
-		var url = InboxData.item_url + '?ktp=' + $rootScope.NIP + '&thread_id=' + item.kode_compos;
+		var url = InboxData.item_url //+ '?ktp=' + $rootScope.NIP + '&thread_id=' + item.kode_compos;
 		console.log (url);
 
 
@@ -1895,8 +1895,11 @@ var app = {
 		
 		$rootScope.thread_id = item.kode_compos; //item.kd_push;
 
-
+		
 		$scope.init = function() {
+			console.log($rootScope.thread_id);
+			console.log($rootScope.NIP);
+
 			//myApp.showPreloader('Fetching message..');
 
 			$http({
