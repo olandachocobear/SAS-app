@@ -13,6 +13,10 @@
 <link rel="stylesheet" href="css/my-app.css">
 <link rel="stylesheet" href="css/framework7-icons.css">
 
+<link rel="stylesheet" href="css/map-bubble.css">
+<link rel="stylesheet" href="css/ios-marker.css">
+<link rel="stylesheet" href="css/revealer.css">
+
 <link href="https://fonts.googleapis.com/css?family=Titillium+Web" rel="stylesheet">
 
 
@@ -81,39 +85,82 @@
 
 <div class="page-content">
 <div class="content-block-title">Welcome</div>
-<div class="content-block" style=position:absolute;width:100%;top:29%>
+
+<div class="content-block" style=position:absolute;width:100%;top:16.5% ng-show="checkOut">
+	<center>
+	<h2 style=line-height:135%>A day's worth of work is done. Let us get some rest!</h2>
+	</center>
+	<br>
+	<img src=female_work_desk.jpg style=margin-left:-12%;margin-top:-20px>
+</div>	
+
+<div class="content-block" style=position:absolute;width:100%;top:10% ng-show="!checkOut">
 
 <center>
       <p class="buttons" style=font-size:30px;width:80%;>
 
-        <a href="#" ng-show="!absenTime" ng-click="scan()" style=font-size:19px class="set-map button button-big button-raised button-fill color-blue ripple-blue">
-          SCAN QR
-          <i class="f7-icons size-22">navigation</i>
-        </a>
+<li class="dropdown" ng-show="!hasAbsen">
+      <input type="checkbox" id=geo_toggle ng-click="geoWatchActive=!geoWatchActive;"/>
+      <a href="#" data-toggle="dropdown" style=font-size:19px>
+      		CHECK POSITION <i class="f7-icons size-22">navigation</i>
+      </a>
+      <ul class="dropdown-menu">
 
-		<div ng-show="result.text!=''" style=margin-top:-4px;line-height:14px;margin-bottom:57px;color:gray>
-		<h2>Result:</h2>
-			<p style=margin-top:15px;text-decoration:underline ng-bind="result.text"></p>
-			<div style="font-size:30px;width:72%;margin-top:25px;background:cornsilk;opacity:0.9;color:#c24e4e; padding: 19px; border: 4px ridge khaki; text-shadow:1px 1px 4px #bbb;margin-bottom:15px;" ng-show="result.time">
-				<div style="font-size: 12px;margin-top: -8px;    margin-bottom: 15px;color: black;font-weight:bold;">Absen Time:</div> 
-				<div ng-bind-html="result.time" ></div>
-			</div>
+        <div id="map" style="margin-top:7px;width:100%;height:260px;"></div>
+		<!-- <div id="map-bubble">
+			You are here.
+		 </div> -->
+		 <div class=pin id=map_pin style=display:none></div>
+		 <div class=pulse></div>
+
+
+		<div ng-show="!hasAbsen" style=padding-top:8px;line-height:14px;color:gray>
+			
+			<h2 ng-bind=geoloc_update></h2>
+			<p style="margin-top:0px !important"; ng-bind-html="result.geoloc_status"></p>	
+
+
 		</div>
 
-			<div style="font-size:30px;width:72%;margin-top:-25px;background:cornflowerblue;opacity:0.9;color:#c24e4e; padding: 19px; border: 4px ridge khaki; text-shadow:1px 1px 4px #444;margin-bottom:15px;" ng-show="result.checkout">
-				<div style="font-size: 12px; margin-top: -8px;    color: white;font-weight:bold;">Absen Time:</div> 
-				<div ng-bind-html="result.checkout" ></div>
-			</div>
+      </ul>
+    </li>
 
-     <p class="buttons" style=font-size:30px;width:80%;>
-        <a href="#" ng-click=boom() ng-show="!result.checkout" id=absenBtn ng-disabled="result.validCode==0" style=font-size:19px class="absen-btn button button-big button-raised button-fill color-red ripple-blue" >
-          {{absen_txt}} 
-		  <span id=countdown_checkout ng-show="checkout_timeleft">
-			<span ng-bind="checkout_timeleft.h">17</span>h<span ng-bind="checkout_timeleft.m">45</span>m<span ng-bind="checkout_timeleft.s">19</span>s
+<div class=dropdown ng-show="hasAbsen">
+		<br>
+			<div id=flexible style="font-size:30px;width:80%;margin-top:25px;background:cornsilk;opacity:0.9;color:#c24e4e; padding: 19px; border: 4px ridge khaki; text-shadow:1px 1px 4px #bbb;margin-bottom:15px;" ng-show="hasAbsen">
+				<div style="font-size: 18px;margin-top: -7px;    margin-bottom: 15px;color: black;font-weight:bold; text-decoration: underline">Lama bekerja:</div> 
+				<div  style="line-height:125%"">
+					{{(absenDuration.hours>0) ? absenDuration.hours+' jam' : null }} 
+					{{(absenDuration.minutes>0) ? absenDuration.minutes+' menit' : null}} 
+					{{(absenDuration.seconds>0) ? absenDuration.seconds+' detik' : null}}
+				</div>	
+			</div>
+			<div style=margin-bottom:15px;>
+				<span style="
+					vertical-align:super;
+					font-size:13px">*)</span>Anda baru bisa checkout setelah <span style=font-size:17px><i><b>{{minimumWorkHour}}</i></b>&nbsp; jam bekerja.
+			</div>
+</div>
+
+     <p class="buttons" style=font-size:30px;width:95%;margin-top:29px>
+        <a href="#" ng-click=boom() ng-show="!result.checkout" id=absenBtn ng-disabled="(!result.validGeo && !hasAbsen) || (hasAbsen && !result.pastWorkHour)" style=font-size:19px class="absen-btn button button-big button-raised button-fill color-red ripple-blue">
+          {{absen_txt}}
+		  <!-- 
+		  <span id=countdown_checkout ng-show="hasAbsen&&!result.pastWorkHour">in
+			<span ng-bind="checkout_timeleft.h" style=margin-left:0px></span>:
+			<span ng-bind="checkout_timeleft.m" style=margin-left:-2px></span>:
+			<span ng-bind="checkout_timeleft.s" style=margin-left:-2px></span>
 		  </span>
+		   -->
          <i class="f7-icons size-22" ng-show="!result.time">alarm</i>
         </a>
+      </p>
 
+      <p class="buttons" style=font-size:30px;width:80%;margin-top:20px>
+        <a href="#" ng-click=boom() ng-show="!result.checkout" id=absenBtn ng-disabled="result.validCode==0 || !result.validGeo" style=font-size:19px class="absen-btn button button-big button-raised button-fill color-purple ripple-blue" >
+          {{break_txt}} 
+
+        </a>
       </p>
 </center>
 
@@ -670,6 +717,10 @@ background-color:lightgoldenrodyellow
 		<script type="text/javascript" src="js/angular-jwt.min.js"></script>
 
 <script type="text/javascript" src="js/my-app.js"></script>
+<script src="http://maps.google.com/maps/api/js?key=AIzaSyCox1lTCfhcQcrj9_92CjnN9KmtzEn4Z3c&libraries=geometry" async defer></script>
+<script type="text/javascript" src="js/map-bubble.js"></script>
+<script type="text/javascript" src="js/geoloc.js"></script>
+
 
 <script>
   app.initialize();
