@@ -143,8 +143,10 @@
 </div>
 
      <p class="buttons" style=font-size:30px;width:95%;margin-top:29px>
-        <a href="#" ng-click=boom() ng-show="!result.checkout" id=absenBtn ng-disabled="(!result.validGeo && !hasAbsen) || (hasAbsen && !result.pastWorkHour)" style=font-size:19px class="absen-btn button button-big button-raised button-fill color-red ripple-blue">
-          {{absen_txt}}
+				<a href="#" ng-click=boom() ng-show="!result.checkout" id=absenBtn 
+					ng-disabled="" style=font-size:19px class="absen-btn button button-big button-raised button-fill color-red ripple-blue">
+					<!-- ng-disabled="(!result.validGeo && !hasAbsen) || (hasAbsen && !result.pastWorkHour)" style=font-size:19px class="absen-btn button button-big button-raised button-fill color-red ripple-blue"> -->
+          	{{absen_txt}}
 		  <!-- 
 		  <span id=countdown_checkout ng-show="hasAbsen&&!result.pastWorkHour">in
 			<span ng-bind="checkout_timeleft.h" style=margin-left:0px></span>:
@@ -156,12 +158,12 @@
         </a>
       </p>
 
-      <p class="buttons" style=font-size:30px;width:80%;margin-top:20px>
+      <!-- <p class="buttons" style=font-size:30px;width:80%;margin-top:20px>
         <a href="#" ng-click=boom() ng-show="!result.checkout" id=absenBtn ng-disabled="result.validCode==0 || !result.validGeo" style=font-size:19px class="absen-btn button button-big button-raised button-fill color-purple ripple-blue" >
           {{break_txt}} 
 
         </a>
-      </p>
+      </p> -->
 </center>
 
 </div>
@@ -213,27 +215,40 @@ background-color:lightgoldenrodyellow
 
   <div class="list-block accordion-list" style=margin-top:67px;>
     <ul>
-    <li ng-repeat="job in joblist" class="accordion-item " ng-class="{true: 'started_job'} [job.start_at != null]" ><a href="#" class="item-link item-content" >
+    <li ng-repeat="job in joblist" class="accordion-item " ><a href="#" class="item-link item-content" >
 	
-	<span class="badge bg-red" ng-show="job.start_at!=null" style=position:absolute;float:right;right:15%;opacity:0.9 >Task started</span>
+	<span class="badge" ng-class="{true: 'bg-blue', false: 'bg-red'} [job.type == 'main']" style=text-transform:uppercase;position:absolute;float:right;right:15%;opacity:0.9 >
+			{{job.type}} job
+	</span>
 
     <div class="item-inner" >
-    <div class="item-title" ng-bind="job.nama_job"></div>
-    </div></a>
+    <div class="item-title" ng-bind="job.group_desc" style="width:70%"></div>
+		</div></a>
+		
     <div class="accordion-item-content" style="">
     <div class="content-block" style="padding:0 !important">
 	<hr style="opacity:0.4;margin-top:0px;">
 	 <div style="padding: 0 16px">
-		 <h4 style=margin-bottom:-5px;margin-top:21px;padding-left:1px>Task Description:</h4>
-		  <h3 ng-bind="job.deskripsi_job" style="padding-left:8px;font-weight:normal;margin-bottom:27px"></h3>
-		  <p class="buttons" ng-show="job.start_at == null" style=font-size:30px;width:60%>
-			<a href="#" ng-click="startJob($index)" style=font-size:14px;margin-top:10px class=" button button-raised button-fill color-gray ripple-gray" >
+			<ul>
+					<li ng-repeat="subjob in job.joblist" class="accordion-item " 
+						ng-class="{true: 'started_job'} [subjob.start_at != null]" >
+						<a href="#" style="display:block" class="item-link item-content" >
+				
+		 <h4 style=margin-bottom:-5px;margin-top:21px;padding-left:1px><u>Task {{$index+1}}</u></h4>
+		 <h2>{{subjob.nama_job}}</h2>
+		  <h3 ng-bind="subjob.deskripsi_job" style="font-weight:normal;margin-bottom:27px"></h3>
+		  <p class="buttons" ng-show="subjob.start_at == null" style=font-size:30px;width:60%;margin-top:-40px;margin-left:3px;margin-bottom:34px>
+			<a href="#" ng-click="startJob($index, $parent.$index)" style=font-size:14px;margin-top:10px class=" button button-raised button-fill color-gray ripple-gray" >
 			  MULAI TUGAS
 			</a>
 			</p>
-			<p ng-show="job.start_at != null" style="color:#9c6767;font-size:12px;margin-top:8px;margin-bottom:6px;margin-left:-3px;margin-bottom:4px;text-align:right;opacity:0.9">
-				<i><u><span style=color:#444><b>Started at</u>:</span></i> {{job.start_at}}</b>
+			<p ng-show="subjob.start_at != null" style="color:#9c6767;font-size:12px;margin-top:8px;margin-bottom:6px;margin-left:-3px;margin-bottom:4px;text-align:right;opacity:0.9;padding-bottom: 6px;">
+				<b><i><u><span style=color:#444>Started at</u>:</span></i> {{subjob.start_at}}</b>
 			</p>
+			
+		</li>
+		</ul>
+		<!-- End repeat job members -->
 
 		</div>
 		<hr style=opacity:1>
@@ -280,7 +295,7 @@ background-color:lightgoldenrodyellow
   <div class="toggle_radio">
     <input type="radio" class="toggle_option" id="first_toggle" name="toggle_option">
     <input type="radio" checked class="toggle_option" id="second_toggle" name="toggle_option">
-    <label for="first_toggle"><p>Main Job</p></label>
+    <label for="first_toggle"><p>Job List</p></label>
     <label for="second_toggle"><p>Additional</p></label>
     <div class="toggle_option_slider">
 	</div>
@@ -294,7 +309,7 @@ background-color:lightgoldenrodyellow
 
 <ul>
 <!-- <a ng-class="{true: 'unstarted'} [job.start_at == null]" ng-href="{{ job.start_at!==null&&job.report_date==null ? 'report.html' : '#'}}"  ng-disabled="job.start_at==null" ng-click=reportJob($index) class="item-link change-page pindah-page" id=boom ng-repeat="job in jobreportlist"> -->
-<a ng-href="{{ job.start_at!==null&&job.report_date==null ? 'report.html' : '#'}}"	ng-click=reportJob($index) class="item-link change-page pindah-page" id=boom ng-repeat="job in jobreportlist" style=margin-bottom:-18px>
+<a ng-href="{{ job.start_at!==null&&job.report_date=='' ? 'report.html' : '#'}}"	ng-click=reportJob($index) class="item-link change-page pindah-page" id=boom ng-repeat="job in jobreportlist" style=margin-bottom:-18px>
 
 
 <style>
@@ -308,7 +323,7 @@ background-color:lightgoldenrodyellow
 
 
 
-<li ng-class="{'unstarted': (job.start_at == null), 'completed': (job.start_at!=null && job.report_date!=null) }">
+<li ng-class="{'unstarted': (job.start_at == null)}">  <!-- 'completed': (job.start_at!=null && job.report_date!=null) }"> -->
 
 <label class="label-checkbox item-content">
 <input type="checkbox" name="cb-1" ng-checked="job.report_date" disabled>
@@ -318,7 +333,7 @@ background-color:lightgoldenrodyellow
   </div>
 <div class="item-inner" style=padding-left:33px;>
   <div class="item-title-row">
-<div class="item-title" ng-bind="job.nama_job" style="font-weight:bold;color:#555" ng-class="{'striked': (job.report_date != null)}">
+<div class="item-title" ng-bind="job.nama_job" style="font-weight:bold;color:#555" ng-class="{'striked': (job.report_date != null && job.report_date != '')}">
  
 </div>
 
@@ -425,10 +440,11 @@ background-color:lightgoldenrodyellow
     
 	<a ng-href="{{newCandidateFlag ? '' : '#view-2'}}" id="tab-2" ng-class="{disabled: newCandidateFlag}" class="tab-link  "><i class="f7-icons size-29">menu<span class="badge bg-red" style=margin-left:-28px;opacity:0.9 ng-bind="job_count"></span></i><span class="tabbar-label">LIST JOB</span></a>
 
-	<a ng-href="{{newCandidateFlag ? '' : '#view-3'}}" id="tab-3" ng-class="{disabled: newCandidateFlag}" class="tab-link"> <i class="f7-icons size-22">compose</i> <span class="tabbar-label">REPORT</span></a>
+	<a ng-href="{{newCandidateFlag ? '' : '#view-3'}}" id="tab-3" ng-class="{disabled: newCandidateFlag}" class="tab-link"> <i class="f7-icons size-22">compose</i> <span class="tabbar-label">LIST JOB</span></a>
 
 	<!-- data-panel="right"  class="open-panel"-->
 	<a href="#view-4" class="tab-link " id="tab-4"> <i class="f7-icons size-27">bell<span class="badge bg-red" style=margin-left:-28px;opacity:0.9 ng-bind="inbox_count"></span></i><span class="tabbar-label">MAILBOX</span></a></div>
+	<!-- <a href="#" class="tab-link " id="tab-sidebar"> <i class="f7-icons size-27">hamburger<span class="badge bg-red" style=margin-left:-28px;opacity:0.9 ng-bind="inbox_count"></span></i><span class="tabbar-label">MAILBOX</span></a></div> -->
   </div>
 </div>
 

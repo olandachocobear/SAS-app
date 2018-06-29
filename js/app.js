@@ -1732,10 +1732,10 @@ var app = {
 			}
 		}
 		
-		$scope.startJob = function($index) {
+		$scope.startJob = function($index,$jobparent) {
 			myApp.showIndicator();
-
-			var url = JobListData.update_url + '?nip=' + $rootScope.NIP + '&kd_job=' + $scope.joblist[$index].id ;
+console.log($index + '--------' + $jobparent);
+			var url = JobListData.update_url + '?nip=' + $rootScope.NIP + '&kd_job=' + $scope.joblist[$jobparent].joblist[$index].id ;
 
 			console.log(url);
 			
@@ -2085,7 +2085,7 @@ app.config(['$compileProvider', function ($compileProvider) {
 			}
 			else {
 				// check if it has reported already before
-				if (selectedItem.report_date==null)
+				if (selectedItem.report_date==null || selectedItem.report_date=='')
 				{
 					JobReportData.item = selectedItem;			
 					$$("#toolbar").css('zIndex',0);
