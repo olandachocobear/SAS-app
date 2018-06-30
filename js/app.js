@@ -796,9 +796,17 @@ var app = {
 					$rootScope.NIP = data.detail.no_ktp;
 					// $rootScope.newCandidateFlag = (data.detail.status=='' && data.detail.no_NIK=='') ? true : false;
                     $rootScope.newCandidateFlag = (data.detail.kd_status_karyawan != 'KDKRY0011') ? true : false;
-                    
-                    $rootScope.minimumWorkHour = data.detail.senin;
+					
+					if(data.absen_type=='period-based')
+						$rootScope.minimumWorkHour = data.detail.senin;
+					else {
+						$rootScope.minimumWorkHour = ''
+						var t = new Date();
+						var day_of_week = t.getDay();
+						$rootScope.shiftEnd = data.absen_rule[day_of_week][1];
+					}
                     localStorageService.set('workhour', $rootScope.minimumWorkHour)
+                    localStorageService.set('shiftends', $rootScope.shiftEnd)
 
 					console.log('new candidate? ' + $rootScope.newCandidateFlag ) 
 
@@ -1367,13 +1375,25 @@ var app = {
         })   
         $scope.hasAbsen = (localStorageService.get('absenToday') == 1) ? true : false;
         $scope.absenTime = $scope.hasAbsen ? localStorageService.get('absenTime') : '';
-        $scope.result = {"text":"", "validCode": 0, "validGeo": false};
+		$scope.result = {"text":"", "validCode": 0, "validGeo": false};
+		$scope.result.pastWorkHour=false;
 
         $scope.refreshTimer = function() {
             if ($rootScope.minimumWorkHour != ''){
                 // if($rootScope.minimumWorkHour == $scope.absenDuration.hours)
                 //     $scope.result.pastWorkHour = true;
-            }
+			}
+
+			else if ($rootScope.shiftEnd!=''||$rootScope.shiftEnd!=null){
+				var jam = new Date().getHours();
+				var menit = new Date().getMinutes();
+				var end_jam = $rootScope.shiftEnd.split(':')[0]
+				var end_menit = $rootScope.shiftEnd.split(':')[1]
+
+				if (jam>=end_jam)
+					$scope.result.pastWorkHour = true;
+					
+			}
             else {
                 if ($scope.checkout_timeleft.h == 0 && $scope.checkout_timeleft.m == 0 && $scope.checkout_timeleft.s == 0 ) {
                     $scope.result.pastWorkHour = true;
@@ -1438,8 +1458,22 @@ var app = {
                 }
 
                 // make this dynamic (from DB) Enable the workHourcheckout lock
-                if ($scope.absenDuration.hours == $rootScope.minimumWorkHour)
-                    $scope.result.pastWorkHour = true;
+				if ($rootScope.minimumWorkHour!=''&&$rootScope.minimumWorkHour!=null){
+					if ($scope.absenDuration.hours == $rootScope.minimumWorkHour)
+						$scope.result.pastWorkHour = true;
+				}
+
+				// rule to let clock-based to check out
+				if ($rootScope.shiftEnd!=''&&$rootScope.shiftEnd!=null){
+					var jam = new Date().getHours();
+					var menit = new Date().getMinutes();
+					var end_jam = $rootScope.shiftEnd.split(':')[0]
+					var end_menit = $rootScope.shiftEnd.split(':')[1]
+	
+					if (jam>=end_jam)
+						$scope.result.pastWorkHour = true;
+						
+				}
         }
 
             
@@ -1477,53 +1511,61 @@ var app = {
             $scope.hasAbsen = true;
 
 		// check ini mo checkin or checkout
-		if( typeof $scope.checkout_timeleft == 'undefined' )
+		// if( typeof $scope.checkout_timeleft == 'undefined' )
+		if (localStorageService.get('absenTime') == undefined)
 		{
-
-		
+			/* CHECK-IN */
 			var d = new Date(); // for now
 			$rootScope.absenTime = d;
 
-		var url = AbsenData.start_url + '?nip=' + $rootScope.NIP;
-		
-		myApp.showIndicator();
-		
-		$http({method: 'GET', url: url}).
-			success(function(data, status, headers, config) {
-				
-			if (data.status == 200){
-	            myApp.hideIndicator();					
+			var url = AbsenData.start_url + '?nip=' + $rootScope.NIP;
+			
+			myApp.showIndicator();
+			
+			$http({method: 'GET', url: url}).
+				success(function(data, status, headers, config) {
+					
+				if (data.status == 200){
+					myApp.hideIndicator();					
 
-				$scope.result = {
-					"text": "Anda Berhasil Absen!",
-					"time": "Pkl. " + pad_zero(d.getHours()) + ':' + pad_zero(d.getMinutes()) + ':' + pad_zero(d.getSeconds()),
-					"format": "(empty)",
-					"cancelled": false,
-                    "validGeo": true,
-                    "pastWorkHour": false,
-				};
+					$scope.result = {
+						"text": "Anda Berhasil Absen!",
+						"time": "Pkl. " + pad_zero(d.getHours()) + ':' + pad_zero(d.getMinutes()) + ':' + pad_zero(d.getSeconds()),
+						"format": "(empty)",
+						"cancelled": false,
+						"validGeo": true,
+						"pastWorkHour": false,
+					};
 
-				$scope.absen_txt = "CHECK OUT " ;
+					$scope.absen_txt = "CHECK OUT " ;
 
-				console.log(JSON.stringify($scope.result))
+					console.log(JSON.stringify($scope.result))
 
 
-                toast("Absen Started", "long", "bottom", -70);
+					toast("Absen Started", "long", "bottom", -70);
 
-                // $scope.countDownStart();
-                $scope.countWorkHourStart(d);
-                localStorageService.set('absenTime', moment(d).format('YYYY-MM-DD HH:mm'));
-                
-                console.log(localStorageService.get('absenTime'))
-                localStorageService.set('absenToday', 1);
+					// $scope.countDownStart();
+					$scope.countWorkHourStart(d);
+					localStorageService.set('absenTime', moment(d).format('YYYY-MM-DD HH:mm'));
+					
+					console.log(localStorageService.get('absenTime'))
+					localStorageService.set('absenToday', 1);
 
-			}
-			else if (data.status == 500){
-	            myApp.hideIndicator();					
-				
-				toast('Absen fail: ' + data.error, "long", "bottom", -70);
-			}
-		});
+					// switch to job-list
+					setTimeout(function() {
+						$$("#tab-1").removeClass('active');
+						$$("#tab-2").addClass('active');
+	
+						$$("#view-1").removeClass('active');
+						$$("#view-2").addClass('active');
+					}, 1750);
+				}
+				else if (data.status == 500){
+					myApp.hideIndicator();					
+					
+					toast('Absen fail: ' + data.error, "long", "bottom", -70);
+				}
+			});
 		} // end of bikin absen
 
 
@@ -2185,8 +2227,10 @@ app.config(['$compileProvider', function ($compileProvider) {
 
                     $rootScope.officeLat = localStorageService.get('lat')
                     $rootScope.officeLng = localStorageService.get('lng')
-                    $rootScope.minimumWorkHour = localStorageService.get('workhour')
-                    console.log("============"  + $rootScope.minimumWorkHour)
+					
+					$rootScope.minimumWorkHour = localStorageService.get('workhour')
+					$rootScope.shiftEnd = localStorageService.get('shiftends')
+					console.log("============"  + $rootScope.minimumWorkHour)
 
 					console.log('new candidate? ' + $rootScope.newCandidateFlag ) 
 

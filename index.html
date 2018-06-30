@@ -21,7 +21,7 @@
 
 
 <!-- for WEINRE debugging.. -->
-<!-- <script src="http://192.168.1.199:8090/target/target-script-min.js#anonymous"></script> -->
+<!-- <script src="http://192.168.1.175:8080/target/target-script-min.js#anonymous"></script> -->
 
 </head>
 <body ng-controller="RootCtrl" id='mainView'>
@@ -135,16 +135,24 @@
 					{{(absenDuration.seconds>0) ? absenDuration.seconds+' detik' : null}}
 				</div>	
 			</div>
-			<div style=margin-bottom:15px;>
+			<div style=margin-bottom:15px; ng-show="minimumWorkHour != '' && minimumWorkHour != null">
 				<span style="
 					vertical-align:super;
-					font-size:13px">*)</span>Anda baru bisa checkout setelah <span style=font-size:17px><i><b>{{minimumWorkHour}}</i></b>&nbsp; jam bekerja.
+					font-size:13px">*)</span>
+					Anda baru bisa checkout setelah <span style=font-size:17px><i><b>{{minimumWorkHour}}</i></b>&nbsp; jam bekerja.
+			</div>
+			
+			<div style=margin-bottom:15px; ng-show="shiftEnd != ''">
+				<span style="
+					vertical-align:super;
+					font-size:13px">*)</span>
+					Anda baru bisa checkout setelah pukul <span style=font-size:18px;color:maroon><b>{{shiftEnd}}</b>.
 			</div>
 </div>
 
      <p class="buttons" style=font-size:30px;width:95%;margin-top:29px>
 				<a href="#" ng-click=boom() ng-show="!result.checkout" id=absenBtn 
-					ng-disabled="" style=font-size:19px class="absen-btn button button-big button-raised button-fill color-red ripple-blue">
+					ng-disabled="(hasAbsen && !result.pastWorkHour) " style=font-size:19px class="absen-btn button button-big button-raised button-fill color-red ripple-blue">
 					<!-- ng-disabled="(!result.validGeo && !hasAbsen) || (hasAbsen && !result.pastWorkHour)" style=font-size:19px class="absen-btn button button-big button-raised button-fill color-red ripple-blue"> -->
           	{{absen_txt}}
 		  <!-- 
